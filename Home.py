@@ -8,14 +8,9 @@ st.set_page_config(
 )
 
 st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/f/ff/Snowflake_Logo.svg", width=200)
-st.sidebar.markdown("---")
 st.sidebar.markdown("**Zero to Snowflake**")
 st.sidebar.markdown("Hands-on Lab · July 28, 2026")
-
-st.title("❄️ Zero to Snowflake")
-st.subheader("Hands-on Lab")
-
-st.markdown("---")
+st.sidebar.markdown("---")
 
 st.markdown("""
 ### Welcome!
