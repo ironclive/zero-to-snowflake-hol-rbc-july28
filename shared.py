@@ -17,7 +17,7 @@ def setup_page(title, icon="❄️"):
             border-radius: 6px;
         }
         [data-testid="stSidebarNavItems"] li:first-child [data-testid="stSidebarNavLink"] span::before {
-            content: "🏠  ";
+            content: "🏠 ";
         }
     </style>
     """, unsafe_allow_html=True)

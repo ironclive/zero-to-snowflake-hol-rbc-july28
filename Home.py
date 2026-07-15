@@ -23,7 +23,7 @@ st.markdown("""
         border-radius: 6px;
     }
     [data-testid="stSidebarNavItems"] li:first-child [data-testid="stSidebarNavLink"] span::before {
-        content: "🏠  ";
+        content: "🏠 ";
     }
     .big-title {
         font-family: 'Source Sans Pro', sans-serif !important;
