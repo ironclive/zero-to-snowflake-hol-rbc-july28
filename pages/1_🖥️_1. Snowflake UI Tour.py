@@ -1,6 +1,9 @@
 import streamlit as st
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from shared import setup_page
 
-st.set_page_config(page_title="1. Snowflake UI Tour", page_icon="❄️", layout="wide")
+setup_page("1. Snowflake UI Tour")
 
 st.title("1️⃣ The Snowflake UI Tour")
 st.markdown("**Duration:** ~20 minutes")
