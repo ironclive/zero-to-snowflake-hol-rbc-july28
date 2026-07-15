@@ -12,39 +12,44 @@ st.logo("https://upload.wikimedia.org/wikipedia/commons/f/ff/Snowflake_Logo.svg"
 st.markdown("""
 <style>
     [data-testid="stSidebar"] {
-        background-color: #1B2A4A;
+        background-color: #F0F4F8;
     }
-    [data-testid="stSidebar"] * {
-        color: #FFFFFF !important;
+    [data-testid="stSidebarNavLink"] span {
+        color: #1B2A4A !important;
+        font-size: 0.95rem;
     }
-    [data-testid="stSidebar"] a[data-testid="stSidebarNavLink"] {
-        color: #C8D6E5 !important;
-    }
-    [data-testid="stSidebar"] a[data-testid="stSidebarNavLink"][aria-current="page"] {
-        background-color: rgba(255,255,255,0.1) !important;
+    [data-testid="stSidebarNavLink"][aria-current="page"] {
+        background-color: #E2E8F0 !important;
+        border-radius: 6px;
     }
     .big-title {
-        font-size: 2.8rem;
-        font-weight: 700;
-        color: #1B2A4A;
-        margin-bottom: 0;
-        line-height: 1.2;
+        font-family: 'Source Sans Pro', sans-serif !important;
+        font-size: 3.2rem !important;
+        font-weight: 800 !important;
+        color: #1B2A4A !important;
+        margin-bottom: 0 !important;
+        margin-top: 0.5rem !important;
+        line-height: 1.1 !important;
+        padding: 0 !important;
     }
     .subtitle {
-        font-size: 1.1rem;
-        color: #5A6B7B;
-        margin-top: 0.25rem;
-        margin-bottom: 2rem;
+        font-size: 1.15rem !important;
+        color: #5A6B7B !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 2.5rem !important;
+        font-weight: 400 !important;
     }
     .metric-label {
         font-size: 0.85rem;
         color: #5A6B7B;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.1rem;
+        font-weight: 400;
     }
     .metric-value {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1B2A4A;
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        color: #1B2A4A !important;
+        line-height: 1.2 !important;
     }
 </style>
 """, unsafe_allow_html=True)
