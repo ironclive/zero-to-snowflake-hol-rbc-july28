@@ -1,6 +1,9 @@
 import streamlit as st
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from shared import setup_page
 
-st.set_page_config(page_title="3. Results Cache & Cloning", page_icon="❄️", layout="wide")
+setup_page("3. Results Cache & Cloning")
 
 st.title("3️⃣ Results Cache & Cloning")
 st.markdown("**Duration:** ~20 minutes")

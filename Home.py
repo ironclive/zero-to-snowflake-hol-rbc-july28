@@ -22,6 +22,9 @@ st.markdown("""
         background-color: #E2E8F0 !important;
         border-radius: 6px;
     }
+    [data-testid="stSidebarNavItems"] li:first-child [data-testid="stSidebarNavLink"] span::before {
+        content: "🏠  ";
+    }
     .big-title {
         font-family: 'Source Sans Pro', sans-serif !important;
         font-size: 3.2rem !important;
