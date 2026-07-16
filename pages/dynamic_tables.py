@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("6️⃣ Dynamic Tables")
+st.title("5️⃣ Dynamic Tables")
 
 st.markdown("**Duration:** ~20 minutes")
 
@@ -36,7 +36,7 @@ st.markdown("---")
 
 st.header("Part B: Create Your First Dynamic Table")
 
-st.markdown("#### Exercise 6.1 — Set context")
+st.markdown("#### Exercise 5.1 — Set context")
 
 st.code("""
 USE ROLE SYSADMIN;
@@ -45,7 +45,7 @@ USE DATABASE TU30_CORTEX_ANALYST_LAB;
 USE SCHEMA RETAIL_BANKING;
 """, language="sql")
 
-st.markdown("#### Exercise 6.2 — Create a summary Dynamic Table")
+st.markdown("#### Exercise 5.2 — Create a summary Dynamic Table")
 
 st.markdown("""
 Let's create a Dynamic Table that maintains a real-time summary of transactions by product and channel:
@@ -70,7 +70,7 @@ JOIN PRODUCTS p ON t.PRODUCT_ID = p.PRODUCT_ID
 GROUP BY p.PRODUCT_NAME, p.PRODUCT_CATEGORY, t.CHANNEL;
 """, language="sql")
 
-st.markdown("#### Exercise 6.3 — Query the Dynamic Table")
+st.markdown("#### Exercise 5.3 — Query the Dynamic Table")
 
 st.code("""
 SELECT * FROM TRANSACTION_SUMMARY
@@ -91,7 +91,7 @@ Dynamic Tables can read from other Dynamic Tables, creating a pipeline (DAG). Le
 a second table that ranks products by total revenue:
 """)
 
-st.markdown("#### Exercise 6.4 — Create a downstream Dynamic Table")
+st.markdown("#### Exercise 5.4 — Create a downstream Dynamic Table")
 
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE PRODUCT_RANKINGS
@@ -108,7 +108,7 @@ FROM TRANSACTION_SUMMARY
 GROUP BY PRODUCT_NAME, PRODUCT_CATEGORY;
 """, language="sql")
 
-st.markdown("#### Exercise 6.5 — Query the rankings")
+st.markdown("#### Exercise 5.5 — Query the rankings")
 
 st.code("""
 SELECT * FROM PRODUCT_RANKINGS
@@ -119,7 +119,7 @@ st.markdown("---")
 
 st.header("Part D: Simulate a Data Change")
 
-st.markdown("#### Exercise 6.6 — Insert new transactions")
+st.markdown("#### Exercise 5.6 — Insert new transactions")
 
 st.code("""
 -- Insert some new high-value transactions
@@ -135,7 +135,7 @@ SELECT
 FROM TRANSACTIONS, TABLE(GENERATOR(ROWCOUNT => 3));
 """, language="sql")
 
-st.markdown("#### Exercise 6.7 — Watch the pipeline refresh")
+st.markdown("#### Exercise 5.7 — Watch the pipeline refresh")
 
 st.code("""
 -- Wait ~1 minute, then check the summary updated

@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("5️⃣ Time Travel & UNDROP")
+st.title("4️⃣ Time Travel & UNDROP")
 
 st.markdown("**Duration:** ~15 minutes")
 
@@ -37,7 +37,7 @@ st.markdown("---")
 
 st.header("Part B: Querying Historical Data")
 
-st.markdown("#### Exercise 5.1 — Check current row count")
+st.markdown("#### Exercise 4.1 — Check current row count")
 
 st.code("""
 USE ROLE SYSADMIN;
@@ -48,7 +48,7 @@ USE SCHEMA RETAIL_BANKING;
 SELECT COUNT(*) AS current_count FROM CUSTOMERS;
 """, language="sql")
 
-st.markdown("#### Exercise 5.2 — Delete some rows")
+st.markdown("#### Exercise 4.2 — Delete some rows")
 
 st.code("""
 -- Delete customers in a specific segment
@@ -59,7 +59,7 @@ WHERE SEGMENT = 'Youth';
 SELECT COUNT(*) AS after_delete FROM CUSTOMERS;
 """, language="sql")
 
-st.markdown("#### Exercise 5.3 — Query the table BEFORE the delete")
+st.markdown("#### Exercise 4.3 — Query the table BEFORE the delete")
 
 st.code("""
 -- Query the table as it was 5 minutes ago
@@ -72,7 +72,7 @@ st.success("""
 The `AT(OFFSET => -300)` clause queries the table as it existed 300 seconds (5 minutes) ago.
 """)
 
-st.markdown("#### Exercise 5.4 — Restore the deleted data")
+st.markdown("#### Exercise 4.4 — Restore the deleted data")
 
 st.code("""
 -- Re-insert the deleted rows from the historical version
@@ -88,7 +88,7 @@ st.markdown("---")
 
 st.header("Part C: UNDROP a Table")
 
-st.markdown("#### Exercise 5.5 — Accidentally drop a table")
+st.markdown("#### Exercise 4.5 — Accidentally drop a table")
 
 st.code("""
 -- Create a clone to experiment with safely
@@ -101,7 +101,7 @@ DROP TABLE CUSTOMERS_BACKUP;
 SHOW TABLES LIKE 'CUSTOMERS_BACKUP';
 """, language="sql")
 
-st.markdown("#### Exercise 5.6 — Recover with UNDROP")
+st.markdown("#### Exercise 4.6 — Recover with UNDROP")
 
 st.code("""
 -- Instantly restore the dropped table
@@ -116,7 +116,7 @@ st.success("""
 with no restore-from-backup process. This works for tables, schemas, and entire databases.
 """)
 
-st.markdown("#### Exercise 5.7 — Clean up")
+st.markdown("#### Exercise 4.7 — Clean up")
 
 st.code("""
 DROP TABLE CUSTOMERS_BACKUP;

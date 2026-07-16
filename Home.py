@@ -59,9 +59,9 @@ pg = st.navigation([
     st.Page("pages/snowflake_ui_tour.py", title="1. Snowflake UI Tour", icon=":material/computer:"),
     st.Page("pages/querying_and_analytics.py", title="2. Querying and Analytics", icon=":material/query_stats:"),
     st.Page("pages/results_cache_and_cloning.py", title="3. Results Cache and Cloning", icon=":material/bolt:"),
-    st.Page("pages/marketplace_data.py", title="4. Marketplace Data", icon=":material/storefront:"),
-    st.Page("pages/time_travel.py", title="5. Time Travel & UNDROP", icon=":material/history:"),
-    st.Page("pages/dynamic_tables.py", title="6. Dynamic Tables", icon=":material/dynamic_feed:"),
+    st.Page("pages/time_travel.py", title="4. Time Travel & UNDROP", icon=":material/history:"),
+    st.Page("pages/dynamic_tables.py", title="5. Dynamic Tables", icon=":material/dynamic_feed:"),
+    st.Page("pages/marketplace_data.py", title="6. Marketplace Data", icon=":material/storefront:"),
     st.Page("pages/governance.py", title="7. Governance", icon=":material/shield:"),
     st.Page("pages/streamlit_in_snowflake.py", title="8. Streamlit in Snowflake", icon=":material/dashboard:"),
 ])

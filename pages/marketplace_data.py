@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("4️⃣ Marketplace Data")
+st.title("6️⃣ Marketplace Data")
 st.markdown("**Duration:** ~20 minutes")
 st.markdown("---")
 

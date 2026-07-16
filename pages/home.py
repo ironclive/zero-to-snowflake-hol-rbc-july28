@@ -56,9 +56,9 @@ st.markdown("""
 | 1 | **Snowflake UI Tour** | Navigate Snowsight, set context, explore tables |
 | 2 | **Querying & Analytics** | Joins, aggregates, window functions, time-series |
 | 3 | **Results Cache & Cloning** | Observe caching, create zero-copy clones |
-| 4 | **Marketplace Data** | Subscribe to free data, join with banking tables |
-| 5 | **Time Travel & UNDROP** | Query historical data, recover dropped objects |
-| 6 | **Dynamic Tables** | Build declarative auto-refreshing pipelines |
+| 4 | **Time Travel & UNDROP** | Query historical data, recover dropped objects |
+| 5 | **Dynamic Tables** | Build declarative auto-refreshing pipelines |
+| 6 | **Marketplace Data** | Subscribe to free data, join with banking tables |
 | 7 | **Governance** | Column masking, row access policies |
 | 8 | **Streamlit in Snowflake** | Build an interactive banking dashboard |
 """)
