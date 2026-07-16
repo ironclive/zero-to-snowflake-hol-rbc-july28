@@ -6,13 +6,13 @@ st.markdown('<p class="subtitle">Hands-on Lab · July 28, 2026</p>', unsafe_allo
 col1, col2, col3 = st.columns(3)
 with col1:
     st.markdown('<p class="metric-label">Sections</p>', unsafe_allow_html=True)
-    st.markdown('<p class="metric-value">4</p>', unsafe_allow_html=True)
+    st.markdown('<p class="metric-value">8</p>', unsafe_allow_html=True)
 with col2:
     st.markdown('<p class="metric-label">Exercises</p>', unsafe_allow_html=True)
-    st.markdown('<p class="metric-value">12</p>', unsafe_allow_html=True)
+    st.markdown('<p class="metric-value">30+</p>', unsafe_allow_html=True)
 with col3:
     st.markdown('<p class="metric-label">Duration</p>', unsafe_allow_html=True)
-    st.markdown('<p class="metric-value">2 hrs</p>', unsafe_allow_html=True)
+    st.markdown('<p class="metric-value">3 hrs</p>', unsafe_allow_html=True)
 
 st.markdown("---")
 
@@ -24,6 +24,7 @@ Each section has **numbered exercises** that you run in a Snowflake worksheet:
 - **Snowsight UI** — for navigating and exploring your data
 - **SQL Worksheets** — for writing and running queries
 - **Marketplace** — for subscribing to external data
+- **Streamlit** — for building interactive apps
 
 All exercises build on each other sequentially — work through them in order.
 """)
@@ -56,6 +57,10 @@ st.markdown("""
 | 2 | **Querying & Analytics** | Joins, aggregates, window functions, time-series |
 | 3 | **Results Cache & Cloning** | Observe caching, create zero-copy clones |
 | 4 | **Marketplace Data** | Subscribe to free data, join with banking tables |
+| 5 | **Time Travel & UNDROP** | Query historical data, recover dropped objects |
+| 6 | **Dynamic Tables** | Build declarative auto-refreshing pipelines |
+| 7 | **Governance** | Column masking, row access policies |
+| 8 | **Streamlit in Snowflake** | Build an interactive banking dashboard |
 """)
 
 st.markdown("---")
