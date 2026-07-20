@@ -34,19 +34,19 @@ LIMIT 10;
 st.markdown("**1b.** Find all customers in Ontario with an income above $100,000:")
 
 st.code("""
-SELECT FIRST_NAME, LAST_NAME, CITY, INCOME, CREDIT_SCORE
+SELECT FIRST_NAME, LAST_NAME, CITY, ANNUAL_INCOME, CREDIT_SCORE
 FROM CUSTOMERS
 WHERE PROVINCE = 'Ontario'
-  AND INCOME > 100000
-ORDER BY INCOME DESC;
+  AND ANNUAL_INCOME > 100000
+ORDER BY ANNUAL_INCOME DESC;
 """, language="sql")
 
 st.markdown("**1c.** Count customers by segment:")
 
 st.code("""
-SELECT SEGMENT, COUNT(*) AS customer_count
+SELECT CUSTOMER_SEGMENT, COUNT(*) AS customer_count
 FROM CUSTOMERS
-GROUP BY SEGMENT
+GROUP BY CUSTOMER_SEGMENT
 ORDER BY customer_count DESC;
 """, language="sql")
 
@@ -109,7 +109,7 @@ ORDER BY total_volume DESC;
 st.markdown("**3b.** Average transaction value by customer segment and product category:")
 
 st.code("""
-SELECT C.SEGMENT,
+SELECT C.CUSTOMER_SEGMENT,
        P.PRODUCT_CATEGORY,
        COUNT(T.TRANSACTION_ID) AS txn_count,
        ROUND(AVG(T.AMOUNT), 2) AS avg_amount,
@@ -117,8 +117,8 @@ SELECT C.SEGMENT,
 FROM TRANSACTIONS T
 JOIN CUSTOMERS C ON T.CUSTOMER_ID = C.CUSTOMER_ID
 JOIN PRODUCTS P ON T.PRODUCT_ID = P.PRODUCT_ID
-GROUP BY C.SEGMENT, P.PRODUCT_CATEGORY
-ORDER BY C.SEGMENT, total_amount DESC;
+GROUP BY C.CUSTOMER_SEGMENT, P.PRODUCT_CATEGORY
+ORDER BY C.CUSTOMER_SEGMENT, total_amount DESC;
 """, language="sql")
 
 st.markdown("---")
@@ -133,13 +133,13 @@ Window functions let you compute analytics across rows without collapsing result
 
 st.code("""
 SELECT C.FIRST_NAME || ' ' || C.LAST_NAME AS CUSTOMER_NAME,
-       C.SEGMENT,
+       C.CUSTOMER_SEGMENT,
        SUM(T.AMOUNT) AS total_spend,
        RANK() OVER (ORDER BY SUM(T.AMOUNT) DESC) AS spend_rank
 FROM TRANSACTIONS T
 JOIN CUSTOMERS C ON T.CUSTOMER_ID = C.CUSTOMER_ID
 WHERE T.TRANSACTION_TYPE = 'Purchase'
-GROUP BY C.CUSTOMER_ID, C.FIRST_NAME, C.LAST_NAME, C.SEGMENT
+GROUP BY C.CUSTOMER_ID, C.FIRST_NAME, C.LAST_NAME, C.CUSTOMER_SEGMENT
 ORDER BY spend_rank
 LIMIT 20;
 """, language="sql")

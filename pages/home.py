@@ -41,7 +41,7 @@ We'll work with a pre-provisioned dataset covering:
 
 | Data type | Examples |
 |-----------|----------|
-| **Customers** | Demographics, segment, income, credit score, province |
+| **Customers** | Demographics, segment, annual income, credit score, province |
 | **Products** | Chequing, savings, credit card, mortgage, LOC, investments |
 | **Transactions** | Purchases, deposits, withdrawals, transfers, payments across 5 channels |
 """)

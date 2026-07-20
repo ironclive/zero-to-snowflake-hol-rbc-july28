@@ -53,7 +53,7 @@ st.markdown("#### Exercise 4.2 — Delete some rows")
 st.code("""
 -- Delete customers in a specific segment
 DELETE FROM CUSTOMERS
-WHERE SEGMENT = 'Youth';
+WHERE CUSTOMER_SEGMENT = 'Basic';
 
 -- Confirm the delete
 SELECT COUNT(*) AS after_delete FROM CUSTOMERS;
@@ -78,7 +78,7 @@ st.code("""
 -- Re-insert the deleted rows from the historical version
 INSERT INTO CUSTOMERS
 SELECT * FROM CUSTOMERS AT(OFFSET => -60*5)
-WHERE SEGMENT = 'Youth';
+WHERE CUSTOMER_SEGMENT = 'Basic';
 
 -- Verify restoration
 SELECT COUNT(*) AS restored_count FROM CUSTOMERS;

@@ -130,7 +130,7 @@ st.code("""
 -- ready to join with provincial economic indicators (external)
 SELECT C.PROVINCE,
        COUNT(*) AS customer_count,
-       AVG(C.INCOME) AS avg_income,
+       AVG(C.ANNUAL_INCOME) AS avg_income,
        AVG(C.CREDIT_SCORE) AS avg_credit_score,
        SUM(T.AMOUNT) AS total_transaction_volume
 FROM RETAIL_BANKING.CUSTOMERS C
@@ -156,21 +156,5 @@ You've learned:
 - Marketplace data can be joined directly with your internal tables
 - This pattern enables enriched analytics without data movement
 
----
-
-### 🎉 Congratulations!
-
-You've completed the **Zero to Snowflake** Hands-on Lab!
-
-**Summary of what you accomplished:**
-1. ✅ Navigated the Snowflake UI and set up your workspace
-2. ✅ Wrote analytical queries across a retail banking dataset
-3. ✅ Observed the results cache and created zero-copy clones
-4. ✅ Subscribed to Marketplace data and enriched your banking analytics
-
-**Next steps to explore on your own:**
-- Create **views** for commonly-used queries
-- Build **dashboards** from your queries in Snowsight
-- Explore **Cortex AI** features (Analyst, Search, LLM functions)
-- Set up **role-based access control** for team collaboration
+**Next →** Head to **Section 7: Governance** to secure your data with masking and row access policies.
 """)

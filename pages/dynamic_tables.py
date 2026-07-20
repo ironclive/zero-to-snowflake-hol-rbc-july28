@@ -123,15 +123,18 @@ st.markdown("#### Exercise 5.6 — Insert new transactions")
 
 st.code("""
 -- Insert some new high-value transactions
-INSERT INTO TRANSACTIONS (TRANSACTION_ID, CUSTOMER_ID, PRODUCT_ID, AMOUNT, TRANSACTION_DATE, CHANNEL, TRANSACTION_TYPE)
+INSERT INTO TRANSACTIONS (TRANSACTION_ID, CUSTOMER_ID, PRODUCT_ID, TRANSACTION_DATE, TRANSACTION_TYPE, AMOUNT, BALANCE_AFTER, CHANNEL, MERCHANT_CATEGORY, STATUS)
 SELECT
     MAX(TRANSACTION_ID) + SEQ4() + 1,
     1,  -- first customer
     1,  -- first product
-    5000.00,
     CURRENT_DATE(),
+    'Deposit',
+    5000.00,
+    NULL,
     'Online',
-    'Deposit'
+    NULL,
+    'Completed'
 FROM TRANSACTIONS, TABLE(GENERATOR(ROWCOUNT => 3));
 """, language="sql")
 

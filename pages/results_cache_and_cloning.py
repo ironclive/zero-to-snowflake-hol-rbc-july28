@@ -35,12 +35,12 @@ Snowflake has **three layers** of caching:
 st.markdown("**Step 1:** Run this query and note the execution time in the **Query Profile**:")
 
 st.code("""
-SELECT C.SEGMENT,
+SELECT C.CUSTOMER_SEGMENT,
        COUNT(DISTINCT T.CUSTOMER_ID) AS active_customers,
        SUM(T.AMOUNT) AS total_volume
 FROM TRANSACTIONS T
 JOIN CUSTOMERS C ON T.CUSTOMER_ID = C.CUSTOMER_ID
-GROUP BY C.SEGMENT
+GROUP BY C.CUSTOMER_SEGMENT
 ORDER BY total_volume DESC;
 """, language="sql")
 
@@ -56,12 +56,12 @@ st.info("""
 st.markdown("**Step 3:** Now modify the query slightly (e.g., change the ORDER BY) and run again:")
 
 st.code("""
-SELECT C.SEGMENT,
+SELECT C.CUSTOMER_SEGMENT,
        COUNT(DISTINCT T.CUSTOMER_ID) AS active_customers,
        SUM(T.AMOUNT) AS total_volume
 FROM TRANSACTIONS T
 JOIN CUSTOMERS C ON T.CUSTOMER_ID = C.CUSTOMER_ID
-GROUP BY C.SEGMENT
+GROUP BY C.CUSTOMER_SEGMENT
 ORDER BY active_customers DESC;  -- Changed!
 """, language="sql")
 
@@ -165,5 +165,5 @@ You've learned:
 - Zero-copy cloning creates instant, independent copies of data
 - Clones are perfect for safe experimentation
 
-**Next →** Head to **Section 4: Marketplace Data** to bring in external data.
+**Next →** Head to **Section 4: Time Travel & UNDROP** to see how Snowflake protects your data.
 """)

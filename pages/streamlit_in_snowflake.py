@@ -69,7 +69,7 @@ provinces = session.sql("SELECT DISTINCT PROVINCE FROM CUSTOMERS ORDER BY 1").co
 province_list = ["All"] + [row[0] for row in provinces]
 selected_province = st.sidebar.selectbox("Province", province_list)
 
-segments = session.sql("SELECT DISTINCT SEGMENT FROM CUSTOMERS ORDER BY 1").collect()
+segments = session.sql("SELECT DISTINCT CUSTOMER_SEGMENT FROM CUSTOMERS ORDER BY 1").collect()
 segment_list = ["All"] + [row[0] for row in segments]
 selected_segment = st.sidebar.selectbox("Segment", segment_list)
 
@@ -78,7 +78,7 @@ where_clauses = []
 if selected_province != "All":
     where_clauses.append(f"c.PROVINCE = '{selected_province}'")
 if selected_segment != "All":
-    where_clauses.append(f"c.SEGMENT = '{selected_segment}'")
+    where_clauses.append(f"c.CUSTOMER_SEGMENT = '{selected_segment}'")
 
 where_sql = "WHERE " + " AND ".join(where_clauses) if where_clauses else ""
 
