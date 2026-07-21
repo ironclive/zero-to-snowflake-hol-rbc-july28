@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.markdown('<h1><span style="background: linear-gradient(135deg, #7C3AED, #5B21B6); color: white; padding: 4px 14px; border-radius: 8px; font-size: 0.7em; margin-right: 8px;">2</span>Querying & Analytics</h1>', unsafe_allow_html=True)
+st.title("📊 Querying & Analytics")
 st.markdown("**Duration:** ~40 minutes")
 st.markdown("---")
 
