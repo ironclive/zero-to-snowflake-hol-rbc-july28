@@ -198,7 +198,85 @@ You can also ask: `Show me the DAG for my dynamic tables in RETAIL_BANKING`
 
 st.markdown("---")
 
-st.header("Key Concepts")
+with st.expander("🔀 Alternative Approach — dbt and the Medallion Architecture"):
+    st.markdown("""
+Dynamic Tables are Snowflake-native and zero-orchestration, but many teams use **dbt (data build tool)** 
+to manage transformations — especially when they want version-controlled SQL, testing, and documentation 
+as part of a CI/CD pipeline.
+
+### The Medallion Architecture (Bronze → Silver → Gold)
+
+A common pattern in both Dynamic Tables and dbt is the **medallion architecture**:
+
+| Layer | Purpose | In our lab |
+|-------|---------|-----------|
+| 🥉 **Bronze** | Raw, unmodified source data | `TRANSACTIONS`, `CUSTOMERS`, `PRODUCTS` |
+| 🥈 **Silver** | Cleaned, joined, enriched data | `TRANSACTION_SUMMARY` (joins + aggregation) |
+| 🥇 **Gold** | Business-ready analytics | `PRODUCT_RANKINGS` (final KPIs, rankings) |
+
+### How this looks in dbt
+
+In dbt, each layer is a **model** (a SQL file) that defines a transformation. dbt handles 
+dependencies, runs them in order, and materializes results as tables or views.
+
+```
+models/
+├── bronze/
+│   └── stg_transactions.sql        -- SELECT * FROM raw.TRANSACTIONS
+├── silver/
+│   └── transaction_summary.sql     -- JOINs, GROUP BY (references bronze)
+└── gold/
+    └── product_rankings.sql        -- RANK(), final metrics (references silver)
+```
+
+**Example: `models/silver/transaction_summary.sql`**
+```sql
+-- depends on: stg_transactions, products
+SELECT
+    p.PRODUCT_NAME,
+    p.PRODUCT_CATEGORY,
+    t.CHANNEL,
+    COUNT(*) AS transaction_count,
+    SUM(t.AMOUNT) AS total_amount,
+    AVG(t.AMOUNT) AS avg_amount
+FROM {{ ref('stg_transactions') }} t
+JOIN {{ source('retail_banking', 'PRODUCTS') }} p
+    ON t.PRODUCT_ID = p.PRODUCT_ID
+GROUP BY 1, 2, 3
+```
+
+**Example: `models/gold/product_rankings.sql`**
+```sql
+-- depends on: transaction_summary
+SELECT
+    PRODUCT_NAME,
+    PRODUCT_CATEGORY,
+    SUM(total_amount) AS revenue,
+    SUM(transaction_count) AS total_transactions,
+    RANK() OVER (ORDER BY SUM(total_amount) DESC) AS revenue_rank
+FROM {{ ref('transaction_summary') }}
+GROUP BY 1, 2
+```
+
+### Dynamic Tables vs. dbt — When to use which?
+
+| Consideration | Dynamic Tables | dbt |
+|--------------|---------------|-----|
+| **Orchestration** | None needed — Snowflake handles refresh | Requires scheduler (cron, Airflow, dbt Cloud) |
+| **Freshness** | Near real-time (`TARGET_LAG`) | Batch (runs on schedule) |
+| **Version control** | SQL lives in Snowflake | SQL lives in Git (PR reviews, CI/CD) |
+| **Testing** | Manual validation | Built-in tests (`not_null`, `unique`, custom) |
+| **Documentation** | Snowsight Graph tab | Auto-generated docs site + lineage |
+| **Incremental logic** | Automatic (Snowflake decides) | Explicit (`is_incremental()` macro) |
+| **Best for** | Always-fresh dashboards, simple pipelines | Complex transformations, governed CI/CD workflows |
+
+**Bottom line:** Dynamic Tables are ideal when you want simplicity and real-time freshness. 
+dbt is ideal when your team values version control, testing, documentation, and CI/CD governance 
+over your transformation logic. Many teams use **both** — dbt for scheduled batch pipelines and 
+Dynamic Tables for low-latency use cases.
+""")
+
+st.markdown("---")
 
 st.markdown("""
 | Feature | Description |
