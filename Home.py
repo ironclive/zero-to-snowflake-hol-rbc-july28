@@ -51,6 +51,18 @@ st.markdown("""
         color: #1B2A4A !important;
         line-height: 1.2 !important;
     }
+    .coco-section {
+        background-color: #EFF6FF;
+        border: 1px solid #BFDBFE;
+        border-radius: 10px;
+        padding: 0.5rem 0.5rem 0 0.5rem;
+        margin: 1rem 0;
+    }
+    [data-testid="stExpander"] {
+        background-color: #EFF6FF;
+        border: 1px solid #BEE3F8;
+        border-radius: 10px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
