@@ -67,7 +67,7 @@ In your new worksheet, set the session context by running:
 
 st.code("""
 USE ROLE SYSADMIN;
-USE WAREHOUSE COMPUTE_WH;
+USE WAREHOUSE TU30_CORTEX_ANALYST_LAB_VWH;
 USE DATABASE TU30_CORTEX_ANALYST_LAB;
 USE SCHEMA RETAIL_BANKING;
 """, language="sql")
@@ -127,7 +127,7 @@ Instead of navigating the UI manually, you could ask **Cortex Code (CoCo)** to d
 
 | What you did | CoCo prompt |
 |-------------|-------------|
-| Set context | `Use role SYSADMIN, warehouse COMPUTE_WH, database TU30_CORTEX_ANALYST_LAB, schema RETAIL_BANKING` |
+| Set context | `Use role SYSADMIN, warehouse TU30_CORTEX_ANALYST_LAB_VWH, database TU30_CORTEX_ANALYST_LAB, schema RETAIL_BANKING` |
 | Browse tables | `What tables are in my current schema?` |
 | Preview data | `Show me the first 10 rows of CUSTOMERS` |
 | Check row counts | `How many rows are in each table in RETAIL_BANKING?` |

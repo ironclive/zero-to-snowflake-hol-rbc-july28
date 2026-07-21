@@ -77,7 +77,7 @@ Some queries don't need a warehouse at all. Try these with your warehouse **susp
 
 st.code("""
 -- Suspend your warehouse first
-ALTER WAREHOUSE COMPUTE_WH SUSPEND;
+ALTER WAREHOUSE TU30_CORTEX_ANALYST_LAB_VWH SUSPEND;
 
 -- These still work (metadata cache)!
 SELECT COUNT(*) FROM CUSTOMERS;
@@ -89,7 +89,7 @@ st.success("These queries return instantly because Snowflake stores metadata (ro
 
 st.code("""
 -- Resume the warehouse for the next exercises
-ALTER WAREHOUSE COMPUTE_WH RESUME;
+ALTER WAREHOUSE TU30_CORTEX_ANALYST_LAB_VWH RESUME;
 """, language="sql")
 
 st.markdown("---")
@@ -163,7 +163,7 @@ CoCo can help you explore caching and cloning conversationally:
 | What you did | CoCo prompt |
 |-------------|-------------|
 | Run a query twice | `Run this query and tell me the execution time, then run it again` |
-| Test metadata cache | `Suspend COMPUTE_WH, then get the row count of CUSTOMERS` |
+| Test metadata cache | `Suspend TU30_CORTEX_ANALYST_LAB_VWH, then get the row count of CUSTOMERS` |
 | Clone a schema | `Create a clone of RETAIL_BANKING called RETAIL_BANKING_CLONE` |
 | Modify the clone | `Delete all Alberta customers from RETAIL_BANKING_CLONE` |
 | Verify isolation | `Compare customer counts between RETAIL_BANKING and RETAIL_BANKING_CLONE` |

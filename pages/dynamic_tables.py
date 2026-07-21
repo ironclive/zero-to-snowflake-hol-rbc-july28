@@ -77,7 +77,7 @@ st.markdown("#### Exercise 5.1 — Set context")
 
 st.code("""
 USE ROLE SYSADMIN;
-USE WAREHOUSE COMPUTE_WH;
+USE WAREHOUSE TU30_CORTEX_ANALYST_LAB_VWH;
 USE DATABASE TU30_CORTEX_ANALYST_LAB;
 USE SCHEMA RETAIL_BANKING;
 """, language="sql")
@@ -91,7 +91,7 @@ Our bronze tables are raw and isolated. The silver layer **joins** them together
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE TRANSACTION_ENRICHED
     TARGET_LAG = '1 minute'
-    WAREHOUSE = COMPUTE_WH
+    WAREHOUSE = TU30_CORTEX_ANALYST_LAB_VWH
 AS
 SELECT
     t.TRANSACTION_ID,
@@ -134,7 +134,7 @@ The gold layer reads from silver and produces **aggregated, consumption-ready me
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE PRODUCT_PERFORMANCE
     TARGET_LAG = '2 minutes'
-    WAREHOUSE = COMPUTE_WH
+    WAREHOUSE = TU30_CORTEX_ANALYST_LAB_VWH
 AS
 SELECT
     PRODUCT_NAME,

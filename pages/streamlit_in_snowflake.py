@@ -43,7 +43,7 @@ st.markdown("""
 2. Click **+ Streamlit App** (top-right)
 3. Configure:
    - **App name:** `Banking_Dashboard`
-   - **Warehouse:** `COMPUTE_WH`
+   - **Warehouse:** `TU30_CORTEX_ANALYST_LAB_VWH`
    - **Database:** `TU30_CORTEX_ANALYST_LAB`
    - **Schema:** `RETAIL_BANKING`
 4. Click **Create**
