@@ -121,7 +121,7 @@ st.success("""
 
 st.markdown("---")
 
-with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
     st.markdown("""
 Instead of navigating the UI manually, you could ask **Cortex Code (CoCo)** to do it for you:
 

@@ -124,7 +124,7 @@ DROP TABLE CUSTOMERS_BACKUP;
 
 st.markdown("---")
 
-with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
     st.markdown("""
 CoCo makes Time Travel feel like a conversation:
 

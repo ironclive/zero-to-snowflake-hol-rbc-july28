@@ -183,7 +183,7 @@ DROP ROW ACCESS POLICY IF EXISTS PROVINCE_ACCESS;
 
 st.markdown("---")
 
-with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
     st.markdown("""
 CoCo can create governance policies from plain English:
 

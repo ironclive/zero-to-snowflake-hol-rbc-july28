@@ -202,7 +202,7 @@ ORDER BY total_volume DESC;
 
 st.markdown("---")
 
-with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
     st.markdown("""
 Instead of writing SQL by hand, you could ask **Cortex Code (CoCo)** in natural language:
 

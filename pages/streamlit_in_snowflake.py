@@ -190,7 +190,7 @@ The app inherits the owner role's permissions — no separate access configurati
 
 st.markdown("---")
 
-with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
     st.markdown("""
 CoCo can build entire Streamlit apps from a description:
 

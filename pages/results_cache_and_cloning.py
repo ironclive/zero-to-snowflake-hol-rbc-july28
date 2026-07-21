@@ -156,7 +156,7 @@ DROP SCHEMA TU30_CORTEX_ANALYST_LAB.RETAIL_BANKING_CLONE;
 
 st.markdown("---")
 
-with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
     st.markdown("""
 CoCo can help you explore caching and cloning conversationally:
 

@@ -225,7 +225,7 @@ DELETE FROM TRANSACTIONS WHERE AMOUNT = 5000.00 AND TRANSACTION_DATE = CURRENT_D
 
 st.markdown("---")
 
-with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
     st.markdown("""
 CoCo can build entire medallion pipelines from a description:
 
