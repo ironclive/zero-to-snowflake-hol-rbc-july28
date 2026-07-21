@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("5️⃣ Dynamic Tables")
+st.markdown('<h1><span style="background: linear-gradient(135deg, #0EA5E9, #0284C7); color: white; padding: 4px 14px; border-radius: 8px; font-size: 0.7em; margin-right: 8px;">5</span>Dynamic Tables</h1>', unsafe_allow_html=True)
 
 st.markdown("**Duration:** ~20 minutes")
 

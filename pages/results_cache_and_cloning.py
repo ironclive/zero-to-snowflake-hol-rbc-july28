@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("3️⃣ Results Cache & Cloning")
+st.markdown('<h1><span style="background: linear-gradient(135deg, #F59E0B, #D97706); color: white; padding: 4px 14px; border-radius: 8px; font-size: 0.7em; margin-right: 8px;">3</span>Results Cache & Cloning</h1>', unsafe_allow_html=True)
 st.markdown("**Duration:** ~20 minutes")
 st.markdown("---")
 

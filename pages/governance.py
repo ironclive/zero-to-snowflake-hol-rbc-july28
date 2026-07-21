@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.title("7️⃣ Governance with Horizon")
+st.markdown('<h1><span style="background: linear-gradient(135deg, #4F46E5, #3730A3); color: white; padding: 4px 14px; border-radius: 8px; font-size: 0.7em; margin-right: 8px;">7</span>Governance with Horizon</h1>', unsafe_allow_html=True)
 
 st.markdown("**Duration:** ~20 minutes")
 
