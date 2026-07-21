@@ -183,6 +183,24 @@ DROP ROW ACCESS POLICY IF EXISTS PROVINCE_ACCESS;
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+CoCo can create governance policies from plain English:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Create email mask | `Create a masking policy that hides email addresses for non-admin roles` |
+| Create income mask | `Mask the ANNUAL_INCOME column so only SYSADMIN and ACCOUNTADMIN can see it` |
+| Apply policies | `Apply the email mask to CUSTOMERS.EMAIL` |
+| Row access policy | `Create a row access policy so non-admin roles can only see Ontario customers` |
+| Test policies | `Query CUSTOMERS as SYSADMIN and show me EMAIL and ANNUAL_INCOME` |
+| Clean up | `Remove all masking and row access policies from CUSTOMERS` |
+
+You can also ask: `What governance policies are applied to the CUSTOMERS table?`
+""")
+
+st.markdown("---")
+
 st.header("Key Concepts")
 
 st.markdown("""

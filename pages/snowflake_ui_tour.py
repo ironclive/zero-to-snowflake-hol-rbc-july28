@@ -121,6 +121,23 @@ st.success("""
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+Instead of navigating the UI manually, you could ask **Cortex Code (CoCo)** to do it for you:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Set context | `Use role SYSADMIN, warehouse COMPUTE_WH, database TU30_CORTEX_ANALYST_LAB, schema RETAIL_BANKING` |
+| Browse tables | `What tables are in my current schema?` |
+| Preview data | `Show me the first 10 rows of CUSTOMERS` |
+| Check row counts | `How many rows are in each table in RETAIL_BANKING?` |
+| Explore columns | `Describe the TRANSACTIONS table` |
+
+CoCo executes SQL on your behalf and returns formatted results — no worksheet needed.
+""")
+
+st.markdown("---")
+
 st.markdown("""
 ## ✅ Section Complete!
 

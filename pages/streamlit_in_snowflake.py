@@ -190,6 +190,24 @@ The app inherits the owner role's permissions — no separate access configurati
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+CoCo can build entire Streamlit apps from a description:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Scaffold an app | `Build me a Streamlit in Snowflake app that shows a banking dashboard with filters for province and segment` |
+| Add charts | `Add a bar chart showing transactions by channel` |
+| Add filters | `Add a sidebar selectbox to filter by CUSTOMER_SEGMENT` |
+| Add metrics | `Show KPI metrics for total customers, transactions, and volume at the top` |
+| Add a table | `Add a data table showing the 20 most recent transactions` |
+| Deploy | `Deploy this Streamlit app to Snowflake in the RETAIL_BANKING schema` |
+
+CoCo writes the full Python code, tests it, and can deploy it — all from natural language.
+""")
+
+st.markdown("---")
+
 st.header("Key Concepts")
 
 st.markdown("""

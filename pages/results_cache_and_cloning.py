@@ -156,6 +156,24 @@ DROP SCHEMA TU30_CORTEX_ANALYST_LAB.RETAIL_BANKING_CLONE;
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+CoCo can help you explore caching and cloning conversationally:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Run a query twice | `Run this query and tell me the execution time, then run it again` |
+| Test metadata cache | `Suspend COMPUTE_WH, then get the row count of CUSTOMERS` |
+| Clone a schema | `Create a clone of RETAIL_BANKING called RETAIL_BANKING_CLONE` |
+| Modify the clone | `Delete all Alberta customers from RETAIL_BANKING_CLONE` |
+| Verify isolation | `Compare customer counts between RETAIL_BANKING and RETAIL_BANKING_CLONE` |
+| Clean up | `Drop the RETAIL_BANKING_CLONE schema` |
+
+CoCo can also explain **why** queries are fast: `Why did my last query run in 0ms?`
+""")
+
+st.markdown("---")
+
 st.success("""
 ## ✅ Section Complete!
 

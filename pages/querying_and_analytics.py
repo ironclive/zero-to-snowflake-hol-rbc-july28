@@ -202,6 +202,22 @@ ORDER BY total_volume DESC;
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+Instead of writing SQL by hand, you could ask **Cortex Code (CoCo)** in natural language:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Filter customers | `Show me all customers in Ontario with annual income above 100K` |
+| Aggregate transactions | `What are the transaction types and their total amounts?` |
+| Join tables | `Show revenue by product category with transaction counts` |
+| Window functions | `Rank customers by total purchase spend` |
+| Time-series | `Give me a monthly transaction summary with active customer counts` |
+| Day-of-week analysis | `Which day of the week has the most transactions?` |
+
+CoCo generates and runs the SQL for you — you can review, modify, and re-run.
+""")
+
 st.success("""
 ## ✅ Section Complete!
 

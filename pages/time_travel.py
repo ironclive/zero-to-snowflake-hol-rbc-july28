@@ -124,6 +124,24 @@ DROP TABLE CUSTOMERS_BACKUP;
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+CoCo makes Time Travel feel like a conversation:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Check count | `How many customers do we have?` |
+| Delete rows | `Delete all Basic segment customers from CUSTOMERS` |
+| Query history | `Show me the CUSTOMERS table as it was 5 minutes ago` |
+| Restore data | `Restore the Basic segment customers I just deleted using Time Travel` |
+| Clone + Drop | `Clone CUSTOMERS to CUSTOMERS_BACKUP, then drop the backup` |
+| UNDROP | `Undrop CUSTOMERS_BACKUP` |
+
+You can also ask: `What was the customer count before my last DELETE?`
+""")
+
+st.markdown("---")
+
 st.header("Key Concepts")
 
 st.markdown("""

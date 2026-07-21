@@ -181,6 +181,23 @@ DELETE FROM TRANSACTIONS WHERE AMOUNT = 5000.00 AND TRANSACTION_DATE = CURRENT_D
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+CoCo can build entire pipelines from a description:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Create summary DT | `Create a dynamic table called TRANSACTION_SUMMARY that summarizes transactions by product and channel, refreshing every 1 minute` |
+| Create downstream DT | `Create a dynamic table PRODUCT_RANKINGS that ranks products by revenue from TRANSACTION_SUMMARY, with 2 minute lag` |
+| Insert test data | `Insert 3 test deposit transactions of $5000 each for customer 1, product 1` |
+| Check refresh | `Query TRANSACTION_SUMMARY to see if the new deposits appeared` |
+| Clean up | `Drop the PRODUCT_RANKINGS and TRANSACTION_SUMMARY dynamic tables and delete today's $5000 transactions` |
+
+You can also ask: `Show me the DAG for my dynamic tables in RETAIL_BANKING`
+""")
+
+st.markdown("---")
+
 st.header("Key Concepts")
 
 st.markdown("""

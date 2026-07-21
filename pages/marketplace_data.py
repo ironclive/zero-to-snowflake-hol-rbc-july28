@@ -147,6 +147,22 @@ st.markdown("""
 
 st.markdown("---")
 
+with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
+    st.markdown("""
+CoCo can help you discover and use Marketplace data:
+
+| What you did | CoCo prompt |
+|-------------|-------------|
+| Explore listing | `What schemas and tables are in SNOWFLAKE_PUBLIC_DATA_FREE?` |
+| Preview data | `Show me sample rows from the finance tables in the public data listing` |
+| Enrich banking data | `Join our customer province data with any economic indicators from the marketplace listing` |
+| Find relevant data | `What marketplace tables could I join with our CUSTOMERS table by province?` |
+
+CoCo can also help you discover new listings: `Search the Snowflake Marketplace for Canadian economic data`
+""")
+
+st.markdown("---")
+
 st.success("""
 ## ✅ Section Complete!
 
