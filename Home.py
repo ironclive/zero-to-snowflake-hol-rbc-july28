@@ -56,6 +56,7 @@ st.markdown("""
 
 pg = st.navigation([
     st.Page("pages/home.py", title="Home", icon=":material/home:"),
+    st.Page("pages/agenda.py", title="Agenda", icon=":material/calendar_today:"),
     st.Page("pages/snowflake_ui_tour.py", title="1. Snowflake UI Tour", icon=":material/computer:"),
     st.Page("pages/querying_and_analytics.py", title="2. Querying and Analytics", icon=":material/query_stats:"),
     st.Page("pages/results_cache_and_cloning.py", title="3. Results Cache and Cloning", icon=":material/bolt:"),
