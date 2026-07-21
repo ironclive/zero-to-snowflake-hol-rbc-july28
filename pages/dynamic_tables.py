@@ -11,30 +11,67 @@ st.header("Objectives")
 st.markdown("""
 By the end of this section, you will be able to:
 
-- Understand declarative data pipelines with Dynamic Tables
-- Create a Dynamic Table that auto-refreshes as source data changes
-- Chain Dynamic Tables to build a multi-step pipeline
-- Visualize the pipeline DAG in Snowsight
+- Understand the **Medallion Architecture** (Bronze → Silver → Gold)
+- Build a medallion pipeline using Dynamic Tables
+- See how data flows automatically through the layers
+- Compare this approach to dbt as an alternative
 """)
 
 st.markdown("---")
 
-st.header("Part A: What Are Dynamic Tables?")
+st.header("Part A: The Medallion Architecture")
 
 st.markdown("""
-Dynamic Tables let you define a transformation **declaratively** — you write a `SELECT` statement 
-describing the desired result, and Snowflake automatically keeps the table up-to-date as source 
-data changes. No scheduling, no stored procedures, no orchestration tools needed.
+The **medallion architecture** is a data design pattern that organizes your pipeline into three layers, 
+each increasing in quality and business value:
 """)
 
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.markdown("""
+    #### 🥉 Bronze
+    **Raw source data**
+    - Landed as-is from source systems
+    - No transformations
+    - Full history preserved
+    """)
+with col2:
+    st.markdown("""
+    #### 🥈 Silver
+    **Cleaned & enriched**
+    - Joins across sources
+    - Data quality applied
+    - Business logic added
+    """)
+with col3:
+    st.markdown("""
+    #### 🥇 Gold
+    **Business-ready**
+    - Aggregated KPIs
+    - Dashboard-ready metrics
+    - Consumption-optimized
+    """)
+
+st.markdown("")
+
 st.info("""
-**Key Concept:** You specify a `TARGET_LAG` — the maximum staleness you'll tolerate. Snowflake 
-determines the optimal refresh strategy (incremental when possible, full when needed) automatically.
+**In our lab, the medallion layers map to:**
+
+| Layer | Table(s) | What it represents |
+|-------|----------|-------------------|
+| 🥉 Bronze | `TRANSACTIONS`, `CUSTOMERS`, `PRODUCTS` | Raw source tables (already loaded) |
+| 🥈 Silver | `TRANSACTION_ENRICHED` | Transactions joined with customer & product context |
+| 🥇 Gold | `PRODUCT_PERFORMANCE` | Business KPIs — revenue, rankings, customer counts by product |
 """)
 
 st.markdown("---")
 
-st.header("Part B: Create Your First Dynamic Table")
+st.header("Part B: Building the Pipeline with Dynamic Tables")
+
+st.markdown("""
+**Dynamic Tables** let you define each medallion layer **declaratively** — you write a `SELECT` 
+describing the desired result, and Snowflake keeps it up-to-date automatically as source data changes.
+""")
 
 st.markdown("#### Exercise 5.1 — Set context")
 
@@ -45,89 +82,97 @@ USE DATABASE TU30_CORTEX_ANALYST_LAB;
 USE SCHEMA RETAIL_BANKING;
 """, language="sql")
 
-st.markdown("#### Exercise 5.2 — Create a summary Dynamic Table")
+st.markdown("#### Exercise 5.2 — Silver Layer: Enrich transactions")
 
 st.markdown("""
-Let's create a Dynamic Table that maintains a real-time summary of transactions by product and channel:
+Our bronze tables are raw and isolated. The silver layer **joins** them together and adds business context:
 """)
 
 st.code("""
-CREATE OR REPLACE DYNAMIC TABLE TRANSACTION_SUMMARY
+CREATE OR REPLACE DYNAMIC TABLE TRANSACTION_ENRICHED
     TARGET_LAG = '1 minute'
     WAREHOUSE = COMPUTE_WH
 AS
 SELECT
-    p.PRODUCT_NAME,
-    p.PRODUCT_CATEGORY,
+    t.TRANSACTION_ID,
+    t.TRANSACTION_DATE,
+    t.AMOUNT,
+    t.TRANSACTION_TYPE,
     t.CHANNEL,
-    COUNT(*) AS transaction_count,
-    SUM(t.AMOUNT) AS total_amount,
-    AVG(t.AMOUNT) AS avg_amount,
-    MIN(t.TRANSACTION_DATE) AS earliest_txn,
-    MAX(t.TRANSACTION_DATE) AS latest_txn
+    t.STATUS,
+    c.FIRST_NAME || ' ' || c.LAST_NAME AS customer_name,
+    c.CUSTOMER_SEGMENT,
+    c.PROVINCE,
+    p.PRODUCT_NAME,
+    p.PRODUCT_CATEGORY
 FROM TRANSACTIONS t
-JOIN PRODUCTS p ON t.PRODUCT_ID = p.PRODUCT_ID
-GROUP BY p.PRODUCT_NAME, p.PRODUCT_CATEGORY, t.CHANNEL;
+JOIN CUSTOMERS c ON t.CUSTOMER_ID = c.CUSTOMER_ID
+JOIN PRODUCTS p ON t.PRODUCT_ID = p.PRODUCT_ID;
 """, language="sql")
 
-st.markdown("#### Exercise 5.3 — Query the Dynamic Table")
+st.markdown("#### Exercise 5.3 — Query the Silver layer")
 
 st.code("""
-SELECT * FROM TRANSACTION_SUMMARY
-ORDER BY total_amount DESC;
+SELECT * FROM TRANSACTION_ENRICHED
+LIMIT 20;
 """, language="sql")
 
 st.success("""
-**What happened?** Snowflake materialized the query results into a table. If the source 
-`TRANSACTIONS` or `PRODUCTS` tables change, this summary will auto-refresh within 1 minute.
+**What happened?** The silver layer now has a single, enriched view of every transaction — 
+with customer name, segment, province, and product details all in one place. No more JOINs 
+needed downstream.
 """)
 
 st.markdown("---")
 
-st.header("Part C: Chain Dynamic Tables")
+st.markdown("#### Exercise 5.4 — Gold Layer: Business KPIs")
 
 st.markdown("""
-Dynamic Tables can read from other Dynamic Tables, creating a pipeline (DAG). Let's build 
-a second table that ranks products by total revenue:
+The gold layer reads from silver and produces **aggregated, consumption-ready metrics**:
 """)
 
-st.markdown("#### Exercise 5.4 — Create a downstream Dynamic Table")
-
 st.code("""
-CREATE OR REPLACE DYNAMIC TABLE PRODUCT_RANKINGS
+CREATE OR REPLACE DYNAMIC TABLE PRODUCT_PERFORMANCE
     TARGET_LAG = '2 minutes'
     WAREHOUSE = COMPUTE_WH
 AS
 SELECT
     PRODUCT_NAME,
     PRODUCT_CATEGORY,
-    SUM(total_amount) AS revenue,
-    SUM(transaction_count) AS total_transactions,
-    RANK() OVER (ORDER BY SUM(total_amount) DESC) AS revenue_rank
-FROM TRANSACTION_SUMMARY
+    COUNT(*) AS total_transactions,
+    COUNT(DISTINCT customer_name) AS unique_customers,
+    SUM(AMOUNT) AS total_revenue,
+    AVG(AMOUNT) AS avg_transaction_value,
+    RANK() OVER (ORDER BY SUM(AMOUNT) DESC) AS revenue_rank
+FROM TRANSACTION_ENRICHED
 GROUP BY PRODUCT_NAME, PRODUCT_CATEGORY;
 """, language="sql")
 
-st.markdown("#### Exercise 5.5 — Query the rankings")
+st.markdown("#### Exercise 5.5 — Query the Gold layer")
 
 st.code("""
-SELECT * FROM PRODUCT_RANKINGS
+SELECT * FROM PRODUCT_PERFORMANCE
 ORDER BY revenue_rank;
 """, language="sql")
 
+st.success("""
+**The full pipeline:** `TRANSACTIONS` + `CUSTOMERS` + `PRODUCTS` (Bronze) → `TRANSACTION_ENRICHED` (Silver) → `PRODUCT_PERFORMANCE` (Gold)
+
+Each layer refreshes automatically. Change a source table and the entire pipeline updates within minutes.
+""")
+
 st.markdown("---")
 
-st.header("Part D: Simulate a Data Change")
+st.header("Part C: Simulate a Data Change")
 
-st.markdown("#### Exercise 5.6 — Insert new transactions")
+st.markdown("#### Exercise 5.6 — Insert new transactions into Bronze")
 
 st.code("""
--- Insert some new high-value transactions
 INSERT INTO TRANSACTIONS (TRANSACTION_ID, CUSTOMER_ID, PRODUCT_ID, TRANSACTION_DATE, TRANSACTION_TYPE, AMOUNT, BALANCE_AFTER, CHANNEL, MERCHANT_CATEGORY, STATUS)
 SELECT
     MAX(TRANSACTION_ID) + SEQ4() + 1,
-    1,  -- first customer
-    1,  -- first product
+    1,
+    1,
     CURRENT_DATE(),
     'Deposit',
     5000.00,
@@ -138,42 +183,41 @@ SELECT
 FROM TRANSACTIONS, TABLE(GENERATOR(ROWCOUNT => 3));
 """, language="sql")
 
-st.markdown("#### Exercise 5.7 — Watch the pipeline refresh")
+st.markdown("#### Exercise 5.7 — Watch data flow through the layers")
 
 st.code("""
--- Wait ~1 minute, then check the summary updated
-SELECT * FROM TRANSACTION_SUMMARY
-WHERE PRODUCT_NAME = (SELECT PRODUCT_NAME FROM PRODUCTS WHERE PRODUCT_ID = 1)
-ORDER BY total_amount DESC;
+-- After ~1 minute: check silver layer picked up new rows
+SELECT * FROM TRANSACTION_ENRICHED
+WHERE AMOUNT = 5000.00 AND TRANSACTION_DATE = CURRENT_DATE();
 
--- Check rankings also updated (~2 minutes)
-SELECT * FROM PRODUCT_RANKINGS
+-- After ~2 minutes: check gold layer updated revenue
+SELECT * FROM PRODUCT_PERFORMANCE
 ORDER BY revenue_rank
 LIMIT 5;
 """, language="sql")
 
 st.markdown("---")
 
-st.header("Part E: Visualize the DAG")
+st.header("Part D: Visualize the DAG")
 
 st.markdown("""
-To see your pipeline graph in Snowsight:
+To see your medallion pipeline in Snowsight:
 
 1. Navigate to **Data → Databases**
 2. Expand `TU30_CORTEX_ANALYST_LAB` → `RETAIL_BANKING` → **Dynamic Tables**
-3. Click on `PRODUCT_RANKINGS`
+3. Click on `PRODUCT_PERFORMANCE`
 4. Select the **Graph** tab
 
-You'll see the dependency chain: `TRANSACTIONS` → `TRANSACTION_SUMMARY` → `PRODUCT_RANKINGS`
+You'll see the full lineage: Bronze sources → Silver (`TRANSACTION_ENRICHED`) → Gold (`PRODUCT_PERFORMANCE`)
 """)
 
 st.markdown("---")
 
-st.header("Part F: Clean up")
+st.header("Part E: Clean up")
 
 st.code("""
-DROP DYNAMIC TABLE IF EXISTS PRODUCT_RANKINGS;
-DROP DYNAMIC TABLE IF EXISTS TRANSACTION_SUMMARY;
+DROP DYNAMIC TABLE IF EXISTS PRODUCT_PERFORMANCE;
+DROP DYNAMIC TABLE IF EXISTS TRANSACTION_ENRICHED;
 
 -- Remove the test transactions
 DELETE FROM TRANSACTIONS WHERE AMOUNT = 5000.00 AND TRANSACTION_DATE = CURRENT_DATE();
@@ -183,104 +227,103 @@ st.markdown("---")
 
 with st.expander("🤖 CoCo Sneak Peek — Do this with Cortex Code"):
     st.markdown("""
-CoCo can build entire pipelines from a description:
+CoCo can build entire medallion pipelines from a description:
 
 | What you did | CoCo prompt |
 |-------------|-------------|
-| Create summary DT | `Create a dynamic table called TRANSACTION_SUMMARY that summarizes transactions by product and channel, refreshing every 1 minute` |
-| Create downstream DT | `Create a dynamic table PRODUCT_RANKINGS that ranks products by revenue from TRANSACTION_SUMMARY, with 2 minute lag` |
+| Silver layer | `Create a dynamic table TRANSACTION_ENRICHED that joins transactions with customers and products, refreshing every 1 minute` |
+| Gold layer | `Create a dynamic table PRODUCT_PERFORMANCE that aggregates revenue and ranks products from TRANSACTION_ENRICHED, with 2 minute lag` |
 | Insert test data | `Insert 3 test deposit transactions of $5000 each for customer 1, product 1` |
-| Check refresh | `Query TRANSACTION_SUMMARY to see if the new deposits appeared` |
-| Clean up | `Drop the PRODUCT_RANKINGS and TRANSACTION_SUMMARY dynamic tables and delete today's $5000 transactions` |
+| Check flow | `Query TRANSACTION_ENRICHED to see if the new deposits flowed through` |
+| Clean up | `Drop PRODUCT_PERFORMANCE and TRANSACTION_ENRICHED and delete today's $5000 test transactions` |
 
 You can also ask: `Show me the DAG for my dynamic tables in RETAIL_BANKING`
 """)
 
 st.markdown("---")
 
-with st.expander("🔀 Alternative Approach — dbt and the Medallion Architecture"):
+with st.expander("🔀 Alternative Approach — How would you do this with dbt?"):
     st.markdown("""
-Dynamic Tables are Snowflake-native and zero-orchestration, but many teams use **dbt (data build tool)** 
-to manage transformations — especially when they want version-controlled SQL, testing, and documentation 
-as part of a CI/CD pipeline.
+Many teams use **dbt (data build tool)** to implement the same medallion architecture — especially 
+when they want version-controlled SQL, automated testing, and CI/CD governance.
 
-### The Medallion Architecture (Bronze → Silver → Gold)
+### Same pipeline, different tool
 
-A common pattern in both Dynamic Tables and dbt is the **medallion architecture**:
-
-| Layer | Purpose | In our lab |
-|-------|---------|-----------|
-| 🥉 **Bronze** | Raw, unmodified source data | `TRANSACTIONS`, `CUSTOMERS`, `PRODUCTS` |
-| 🥈 **Silver** | Cleaned, joined, enriched data | `TRANSACTION_SUMMARY` (joins + aggregation) |
-| 🥇 **Gold** | Business-ready analytics | `PRODUCT_RANKINGS` (final KPIs, rankings) |
-
-### How this looks in dbt
-
-In dbt, each layer is a **model** (a SQL file) that defines a transformation. dbt handles 
-dependencies, runs them in order, and materializes results as tables or views.
+In dbt, each layer is a **model** (a `.sql` file). dbt resolves dependencies via `{{ ref() }}`, 
+runs them in order, and materializes results as tables or views in Snowflake.
 
 ```
 models/
-├── bronze/
-│   └── stg_transactions.sql        -- SELECT * FROM raw.TRANSACTIONS
-├── silver/
-│   └── transaction_summary.sql     -- JOINs, GROUP BY (references bronze)
-└── gold/
-    └── product_rankings.sql        -- RANK(), final metrics (references silver)
+├── staging/          ← Bronze (thin wrappers on source tables)
+│   ├── stg_transactions.sql
+│   ├── stg_customers.sql
+│   └── stg_products.sql
+├── intermediate/     ← Silver (joins, enrichment)
+│   └── transaction_enriched.sql
+└── marts/            ← Gold (business KPIs)
+    └── product_performance.sql
 ```
 
-**Example: `models/silver/transaction_summary.sql`**
+**Silver: `models/intermediate/transaction_enriched.sql`**
 ```sql
--- depends on: stg_transactions, products
 SELECT
-    p.PRODUCT_NAME,
-    p.PRODUCT_CATEGORY,
+    t.TRANSACTION_ID,
+    t.TRANSACTION_DATE,
+    t.AMOUNT,
+    t.TRANSACTION_TYPE,
     t.CHANNEL,
-    COUNT(*) AS transaction_count,
-    SUM(t.AMOUNT) AS total_amount,
-    AVG(t.AMOUNT) AS avg_amount
+    t.STATUS,
+    c.FIRST_NAME || ' ' || c.LAST_NAME AS customer_name,
+    c.CUSTOMER_SEGMENT,
+    c.PROVINCE,
+    p.PRODUCT_NAME,
+    p.PRODUCT_CATEGORY
 FROM {{ ref('stg_transactions') }} t
-JOIN {{ source('retail_banking', 'PRODUCTS') }} p
-    ON t.PRODUCT_ID = p.PRODUCT_ID
-GROUP BY 1, 2, 3
+JOIN {{ ref('stg_customers') }} c ON t.CUSTOMER_ID = c.CUSTOMER_ID
+JOIN {{ ref('stg_products') }} p ON t.PRODUCT_ID = p.PRODUCT_ID
 ```
 
-**Example: `models/gold/product_rankings.sql`**
+**Gold: `models/marts/product_performance.sql`**
 ```sql
--- depends on: transaction_summary
 SELECT
     PRODUCT_NAME,
     PRODUCT_CATEGORY,
-    SUM(total_amount) AS revenue,
-    SUM(transaction_count) AS total_transactions,
-    RANK() OVER (ORDER BY SUM(total_amount) DESC) AS revenue_rank
-FROM {{ ref('transaction_summary') }}
+    COUNT(*) AS total_transactions,
+    COUNT(DISTINCT customer_name) AS unique_customers,
+    SUM(AMOUNT) AS total_revenue,
+    AVG(AMOUNT) AS avg_transaction_value,
+    RANK() OVER (ORDER BY SUM(AMOUNT) DESC) AS revenue_rank
+FROM {{ ref('transaction_enriched') }}
 GROUP BY 1, 2
 ```
 
-### Dynamic Tables vs. dbt — When to use which?
+Then run: `dbt run` — dbt builds Bronze → Silver → Gold in dependency order.
 
-| Consideration | Dynamic Tables | dbt |
-|--------------|---------------|-----|
-| **Orchestration** | None needed — Snowflake handles refresh | Requires scheduler (cron, Airflow, dbt Cloud) |
-| **Freshness** | Near real-time (`TARGET_LAG`) | Batch (runs on schedule) |
-| **Version control** | SQL lives in Snowflake | SQL lives in Git (PR reviews, CI/CD) |
-| **Testing** | Manual validation | Built-in tests (`not_null`, `unique`, custom) |
-| **Documentation** | Snowsight Graph tab | Auto-generated docs site + lineage |
-| **Incremental logic** | Automatic (Snowflake decides) | Explicit (`is_incremental()` macro) |
-| **Best for** | Always-fresh dashboards, simple pipelines | Complex transformations, governed CI/CD workflows |
+### When to use which?
 
-**Bottom line:** Dynamic Tables are ideal when you want simplicity and real-time freshness. 
-dbt is ideal when your team values version control, testing, documentation, and CI/CD governance 
-over your transformation logic. Many teams use **both** — dbt for scheduled batch pipelines and 
-Dynamic Tables for low-latency use cases.
+| | Dynamic Tables | dbt |
+|-|---------------|-----|
+| **Orchestration** | None — Snowflake auto-refreshes | Requires scheduler (cron, Airflow, dbt Cloud) |
+| **Freshness** | Near real-time (TARGET_LAG) | Batch (e.g., hourly, daily) |
+| **Version control** | SQL lives in Snowflake | SQL lives in Git with PR reviews |
+| **Testing** | Manual validation | Built-in tests (`not_null`, `unique`, custom assertions) |
+| **Documentation** | Snowsight Graph tab | Auto-generated docs site + lineage graph |
+| **Incremental logic** | Automatic | Explicit (`is_incremental()` macro) |
+| **Best for** | Real-time dashboards, simple pipelines | Governed, testable, CI/CD-driven pipelines |
+
+**Bottom line:** Both implement the same medallion pattern. Dynamic Tables give you real-time 
+freshness with zero orchestration. dbt gives you version control, testing, and CI/CD governance. 
+Many teams use **both** — dbt for scheduled batch pipelines and Dynamic Tables for low-latency use cases.
 """)
 
 st.markdown("---")
 
+st.header("Key Concepts")
+
 st.markdown("""
 | Feature | Description |
 |---------|-------------|
+| Medallion Architecture | Bronze (raw) → Silver (enriched) → Gold (business-ready) |
 | `TARGET_LAG` | Maximum allowed staleness (e.g., '1 minute', '1 hour') |
 | Incremental refresh | Snowflake processes only changed data when possible |
 | DAG visualization | See pipeline dependencies in Snowsight Graph tab |
