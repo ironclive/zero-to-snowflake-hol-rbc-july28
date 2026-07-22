@@ -78,7 +78,7 @@ st.markdown("---")
 st.markdown("### Pre-provisioned data")
 
 st.markdown("""
-Your lab environment includes **`TU30_CORTEX_ANALYST_LAB.RETAIL_BANKING`** with:
+Your lab environment includes **`ZERO_TO_SNOWFLAKE_HOL.RETAIL_BANKING_XX`** (where XX is your seat number) with:
 """)
 
 st.markdown("""

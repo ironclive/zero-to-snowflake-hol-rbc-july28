@@ -78,16 +78,16 @@ running the query. The underlying data is never modified.
 st.markdown("#### Exercise 6.1 — Set context")
 
 st.code("""
-USE ROLE SYSADMIN;
-USE WAREHOUSE TU30_CORTEX_ANALYST_LAB_VWH;
-USE DATABASE TU30_CORTEX_ANALYST_LAB;
-USE SCHEMA RETAIL_BANKING;
+USE ROLE HOL_USER_XX;  -- Replace XX with your seat number
+USE WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH;
+USE DATABASE ZERO_TO_SNOWFLAKE_HOL;
+USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
 """, language="sql")
 
 st.markdown("#### Exercise 6.2 — View sensitive data (before masking)")
 
 st.code("""
--- As SYSADMIN, we can see all data
+-- With your HOL_USER role, you can see all data
 SELECT
     CUSTOMER_ID,
     FIRST_NAME,
@@ -104,7 +104,7 @@ st.code("""
 CREATE OR REPLACE MASKING POLICY EMAIL_MASK AS (val STRING)
 RETURNS STRING ->
     CASE
-        WHEN CURRENT_ROLE() IN ('SYSADMIN', 'ACCOUNTADMIN')
+        WHEN CURRENT_ROLE() LIKE 'HOL_USER_%'
             THEN val
         ELSE REGEXP_REPLACE(val, '.+@', '****@')
     END;
@@ -124,7 +124,7 @@ st.code("""
 CREATE OR REPLACE MASKING POLICY INCOME_MASK AS (val NUMBER)
 RETURNS NUMBER ->
     CASE
-        WHEN CURRENT_ROLE() IN ('SYSADMIN', 'ACCOUNTADMIN')
+        WHEN CURRENT_ROLE() LIKE 'HOL_USER_%'
             THEN val
         ELSE NULL
     END;
@@ -134,16 +134,16 @@ ALTER TABLE CUSTOMERS
     SET MASKING POLICY INCOME_MASK;
 """, language="sql")
 
-st.markdown("#### Exercise 6.6 — Test the masking (as SYSADMIN)")
+st.markdown("#### Exercise 6.6 — Test the masking (your role sees full data)")
 
 st.code("""
--- As SYSADMIN, you still see full data
+-- With your HOL role, you still see full data
 SELECT CUSTOMER_ID, EMAIL, ANNUAL_INCOME
 FROM CUSTOMERS LIMIT 5;
 """, language="sql")
 
 st.success("""
-**What happened?** As SYSADMIN, you see the real data. If a lower-privilege role queries the same 
+**What happened?** With your HOL_USER role, you see the real data. If a role NOT matching HOL_USER_% queries the same 
 table, emails would show as `****@domain.com` and income would show as `NULL` — same table, 
 same query, different results based on role.
 """)
@@ -164,7 +164,7 @@ st.code("""
 CREATE OR REPLACE ROW ACCESS POLICY PROVINCE_ACCESS AS (province_val VARCHAR)
 RETURNS BOOLEAN ->
     CASE
-        WHEN CURRENT_ROLE() IN ('SYSADMIN', 'ACCOUNTADMIN')
+        WHEN CURRENT_ROLE() LIKE 'HOL_USER_%'
             THEN TRUE
         ELSE province_val = 'Ontario'
     END;
@@ -177,7 +177,7 @@ ALTER TABLE CUSTOMERS
     ADD ROW ACCESS POLICY PROVINCE_ACCESS ON (PROVINCE);
 """, language="sql")
 
-st.markdown("#### Exercise 6.9 — Verify (as SYSADMIN, all rows visible)")
+st.markdown("#### Exercise 6.9 — Verify (your role sees all rows)")
 
 st.code("""
 SELECT PROVINCE, COUNT(*) AS customer_count
@@ -187,7 +187,7 @@ ORDER BY customer_count DESC;
 """, language="sql")
 
 st.success("""
-**What happened?** As SYSADMIN, you see all provinces. A restricted role would only see Ontario 
+**What happened?** With your HOL_USER role, you see all provinces. Any other role would only see Ontario 
 customers — the other rows are silently filtered out. No errors, no empty results messaging — 
 the user simply never sees data they shouldn't.
 """)
@@ -217,10 +217,10 @@ CoCo can create governance policies from plain English:
 | What you did | CoCo prompt |
 |-------------|-------------|
 | Create email mask | `Create a masking policy that hides email addresses for non-admin roles` |
-| Create income mask | `Mask the ANNUAL_INCOME column so only SYSADMIN and ACCOUNTADMIN can see it` |
+| Create income mask | `Mask the ANNUAL_INCOME column so only HOL_USER roles can see it` |
 | Apply policies | `Apply the email mask to CUSTOMERS.EMAIL` |
 | Row access policy | `Create a row access policy so non-admin roles can only see Ontario customers` |
-| Test policies | `Query CUSTOMERS as SYSADMIN and show me EMAIL and ANNUAL_INCOME` |
+| Test policies | `Query CUSTOMERS and show me EMAIL and ANNUAL_INCOME` |
 | Clean up | `Remove all masking and row access policies from CUSTOMERS` |
 
 You can also ask: `What governance policies are applied to the CUSTOMERS table?`

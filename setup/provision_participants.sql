@@ -1,13 +1,18 @@
 /*
 =============================================================================
   ZERO TO SNOWFLAKE HOL — PARTICIPANT ENVIRONMENT SETUP
-  Run as: ACCOUNTADMIN (or SECURITYADMIN + SYSADMIN)
+  Run as: ACCOUNTADMIN
   
   This script creates:
-    - 30 roles (HOL_USER_01 .. HOL_USER_30)
+    - A dedicated database (ZERO_TO_SNOWFLAKE_HOL)
+    - A shared warehouse (ZERO_TO_SNOWFLAKE_HOL_WH)
+    - 30 roles (HOL_USER_01 .. HOL_USER_30) granted to PUBLIC
     - 30 schemas cloned from RETAIL_BANKING (RETAIL_BANKING_01 .. _30)
     - All necessary grants for every exercise in the HOL
     
+  Roles are granted to PUBLIC so participants self-select their seat number.
+  No admin assignment needed at check-in.
+  
   Run this ONCE before the lab starts in each sandbox (AWS / AZ).
 =============================================================================
 */
@@ -15,16 +20,19 @@
 -- ============================================================
 -- CONFIGURATION
 -- ============================================================
-SET DB_NAME       = 'TU30_CORTEX_ANALYST_LAB';
+SET DB_NAME       = 'ZERO_TO_SNOWFLAKE_HOL';
+SET SOURCE_DB     = 'TU30_CORTEX_ANALYST_LAB';
 SET SOURCE_SCHEMA = 'RETAIL_BANKING';
-SET WAREHOUSE     = 'TU30_CORTEX_ANALYST_LAB_VWH';
+SET WAREHOUSE     = 'ZERO_TO_SNOWFLAKE_HOL_WH';
 SET NUM_USERS     = 30;
 
 USE ROLE ACCOUNTADMIN;
 
 -- ============================================================
--- STEP 1: Create the warehouse (if not exists)
+-- STEP 1: Create dedicated database and warehouse
 -- ============================================================
+CREATE DATABASE IF NOT EXISTS IDENTIFIER($DB_NAME);
+
 CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($WAREHOUSE)
     WAREHOUSE_SIZE = 'XSMALL'
     AUTO_SUSPEND   = 60
@@ -32,14 +40,19 @@ CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($WAREHOUSE)
     INITIALLY_SUSPENDED = TRUE;
 
 -- ============================================================
--- STEP 2: Create roles and schemas in a loop
+-- STEP 2: Clone source schema into the new database
+-- ============================================================
+CREATE SCHEMA IF NOT EXISTS IDENTIFIER($DB_NAME || '.' || $SOURCE_SCHEMA)
+    CLONE IDENTIFIER($SOURCE_DB || '.' || $SOURCE_SCHEMA);
+
+-- ============================================================
+-- STEP 3: Create roles and per-participant schemas
 -- ============================================================
 
 BEGIN
     LET i INTEGER := 1;
     LET role_name VARCHAR;
     LET schema_name VARCHAR;
-    LET user_name VARCHAR;
     
     FOR i IN 1 TO $NUM_USERS DO
         role_name   := 'HOL_USER_' || LPAD(i::VARCHAR, 2, '0');
@@ -48,54 +61,49 @@ BEGIN
         -- Create the role
         EXECUTE IMMEDIATE 'CREATE ROLE IF NOT EXISTS ' || role_name;
         
-        -- Grant role to SYSADMIN (so admins can manage)
+        -- Grant role to SYSADMIN (admin management)
         EXECUTE IMMEDIATE 'GRANT ROLE ' || role_name || ' TO ROLE SYSADMIN';
+        
+        -- Grant role to PUBLIC (self-service: participants pick their seat number)
+        EXECUTE IMMEDIATE 'GRANT ROLE ' || role_name || ' TO ROLE PUBLIC';
         
         -- Clone the schema (instant, zero storage)
         EXECUTE IMMEDIATE 'CREATE SCHEMA IF NOT EXISTS ' || $DB_NAME || '.' || schema_name || ' CLONE ' || $DB_NAME || '.' || $SOURCE_SCHEMA;
         
         -- ============================================================
-        -- GRANTS: Database level
+        -- GRANT: Database level
         -- ============================================================
-        -- USAGE on database
         EXECUTE IMMEDIATE 'GRANT USAGE ON DATABASE ' || $DB_NAME || ' TO ROLE ' || role_name;
         
-        -- ============================================================
-        -- GRANTS: Schema level (OWNERSHIP of their schema)
-        -- ============================================================
-        -- Transfer ownership of the cloned schema to the participant role
-        -- This covers: CREATE TABLE, CREATE DYNAMIC TABLE, CREATE VIEW,
-        --              CREATE MASKING POLICY, CREATE ROW ACCESS POLICY,
-        --              CREATE STREAMLIT, ALTER TABLE, DROP TABLE, etc.
-        EXECUTE IMMEDIATE 'GRANT OWNERSHIP ON SCHEMA ' || $DB_NAME || '.' || schema_name || ' TO ROLE ' || role_name || ' REVOKE CURRENT GRANTS';
+        -- CREATE SCHEMA needed for Section 3 (clone exercise)
+        EXECUTE IMMEDIATE 'GRANT CREATE SCHEMA ON DATABASE ' || $DB_NAME || ' TO ROLE ' || role_name;
         
-        -- Grant ownership on ALL tables in the schema (cloned tables)
+        -- ============================================================
+        -- GRANT: Schema ownership (their isolated workspace)
+        -- Covers: CREATE/DROP TABLE, DYNAMIC TABLE, VIEW, MASKING POLICY,
+        --         ROW ACCESS POLICY, STREAMLIT, ALTER TABLE, UNDROP, etc.
+        -- ============================================================
+        EXECUTE IMMEDIATE 'GRANT OWNERSHIP ON SCHEMA ' || $DB_NAME || '.' || schema_name || ' TO ROLE ' || role_name || ' REVOKE CURRENT GRANTS';
         EXECUTE IMMEDIATE 'GRANT OWNERSHIP ON ALL TABLES IN SCHEMA ' || $DB_NAME || '.' || schema_name || ' TO ROLE ' || role_name || ' REVOKE CURRENT GRANTS';
         
         -- ============================================================
-        -- GRANTS: Warehouse
+        -- GRANT: Warehouse (USAGE = queries, OPERATE = suspend/resume)
         -- ============================================================
-        -- USAGE = can run queries; OPERATE = can suspend/resume (Section 3)
         EXECUTE IMMEDIATE 'GRANT USAGE, OPERATE ON WAREHOUSE ' || $WAREHOUSE || ' TO ROLE ' || role_name;
         
         -- ============================================================
-        -- GRANTS: Source schema (read-only, for reference)
+        -- GRANT: Source schema (read-only reference)
         -- ============================================================
         EXECUTE IMMEDIATE 'GRANT USAGE ON SCHEMA ' || $DB_NAME || '.' || $SOURCE_SCHEMA || ' TO ROLE ' || role_name;
         EXECUTE IMMEDIATE 'GRANT SELECT ON ALL TABLES IN SCHEMA ' || $DB_NAME || '.' || $SOURCE_SCHEMA || ' TO ROLE ' || role_name;
-        
-        -- ============================================================
-        -- GRANTS: Marketplace data (Section 6)
-        -- The marketplace DB is created during the lab via "Get" button.
-        -- Once created, run the marketplace grant script below.
-        -- ============================================================
         
     END FOR;
 END;
 
 -- ============================================================
--- STEP 3: Marketplace grants (run AFTER subscribing to listing)
--- Uncomment and run after "Snowflake Public Data (Free)" is subscribed
+-- STEP 4: Marketplace grants
+-- Run AFTER subscribing to "Snowflake Public Data (Free)" listing.
+-- Uncomment and execute:
 -- ============================================================
 /*
 SET MARKETPLACE_DB = 'SNOWFLAKE_PUBLIC_DATA_FREE';
@@ -112,57 +120,37 @@ END;
 */
 
 -- ============================================================
--- STEP 4: Assign roles to users
--- Run this for each participant, mapping their Snowflake username
--- to their assigned role number.
---
--- Example:
---   GRANT ROLE HOL_USER_01 TO USER participant1_username;
---   GRANT ROLE HOL_USER_01 TO USER participant1_username;
---
--- Or bulk assign (if using sequential usernames like HOL_USER1..30):
--- ============================================================
-/*
-BEGIN
-    LET i INTEGER := 1;
-    LET role_name VARCHAR;
-    LET user_name VARCHAR;
-    
-    FOR i IN 1 TO $NUM_USERS DO
-        role_name := 'HOL_USER_' || LPAD(i::VARCHAR, 2, '0');
-        user_name := 'HOL_PARTICIPANT_' || LPAD(i::VARCHAR, 2, '0');
-        EXECUTE IMMEDIATE 'GRANT ROLE ' || role_name || ' TO USER ' || user_name;
-    END FOR;
-END;
-*/
-
--- ============================================================
--- VERIFICATION: Check that everything was created
+-- VERIFICATION
 -- ============================================================
 SHOW ROLES LIKE 'HOL_USER_%';
-SHOW SCHEMAS IN DATABASE TU30_CORTEX_ANALYST_LAB STARTS WITH 'RETAIL_BANKING_';
+SHOW SCHEMAS IN DATABASE ZERO_TO_SNOWFLAKE_HOL STARTS WITH 'RETAIL_BANKING_';
+SELECT COUNT(*) AS schema_count FROM INFORMATION_SCHEMA.SCHEMATA 
+WHERE CATALOG_NAME = 'ZERO_TO_SNOWFLAKE_HOL' AND SCHEMA_NAME LIKE 'RETAIL_BANKING_%';
 
 -- ============================================================
--- SUMMARY OF GRANTS PER ROLE
+-- GRANTS SUMMARY PER ROLE (HOL_USER_XX)
 -- ============================================================
--- Each HOL_USER_XX role has:
 --
--- DATABASE LEVEL:
---   ✅ USAGE on TU30_CORTEX_ANALYST_LAB
+-- ROLE ACCESSIBILITY:
+--   ✅ Granted to PUBLIC — participants USE ROLE HOL_USER_XX (seat number)
+--
+-- DATABASE (ZERO_TO_SNOWFLAKE_HOL):
+--   ✅ USAGE
+--   ✅ CREATE SCHEMA (for clone exercise in Section 3)
 --
 -- THEIR SCHEMA (RETAIL_BANKING_XX):
---   ✅ OWNERSHIP — full control of all objects within
---      Covers: SELECT, INSERT, UPDATE, DELETE on tables
---              CREATE/DROP TABLE, VIEW, DYNAMIC TABLE
---              CREATE/DROP MASKING POLICY, ROW ACCESS POLICY
---              CREATE STREAMLIT
---              ALTER TABLE (apply/remove policies)
---              DROP TABLE + UNDROP TABLE (Time Travel)
+--   ✅ OWNERSHIP — full control of all objects:
+--      • SELECT, INSERT, UPDATE, DELETE on tables
+--      • CREATE/DROP TABLE, VIEW, DYNAMIC TABLE
+--      • CREATE/DROP MASKING POLICY, ROW ACCESS POLICY
+--      • CREATE STREAMLIT
+--      • ALTER TABLE (apply/remove policies)
+--      • DROP TABLE + UNDROP TABLE (Time Travel)
 --
 -- SOURCE SCHEMA (RETAIL_BANKING):
 --   ✅ USAGE + SELECT (read-only reference)
 --
--- WAREHOUSE (TU30_CORTEX_ANALYST_LAB_VWH):
+-- WAREHOUSE (ZERO_TO_SNOWFLAKE_HOL_WH):
 --   ✅ USAGE (run queries)
 --   ✅ OPERATE (suspend/resume for cache exercise)
 --
@@ -173,24 +161,22 @@ SHOW SCHEMAS IN DATABASE TU30_CORTEX_ANALYST_LAB STARTS WITH 'RETAIL_BANKING_';
 
 
 -- ============================================================
--- TEARDOWN (run AFTER the lab to clean up)
+-- TEARDOWN (run AFTER the lab to clean up everything)
 -- ============================================================
 /*
 USE ROLE ACCOUNTADMIN;
 
+-- Drop the entire HOL database (removes all 30 schemas + source)
+DROP DATABASE IF EXISTS ZERO_TO_SNOWFLAKE_HOL;
+DROP WAREHOUSE IF EXISTS ZERO_TO_SNOWFLAKE_HOL_WH;
+
+-- Drop all roles
 BEGIN
     LET i INTEGER := 1;
     LET role_name VARCHAR;
-    LET schema_name VARCHAR;
     
     FOR i IN 1 TO 30 DO
-        role_name   := 'HOL_USER_' || LPAD(i::VARCHAR, 2, '0');
-        schema_name := 'RETAIL_BANKING_' || LPAD(i::VARCHAR, 2, '0');
-        
-        -- Drop schema (CASCADE drops all objects inside)
-        EXECUTE IMMEDIATE 'DROP SCHEMA IF EXISTS TU30_CORTEX_ANALYST_LAB.' || schema_name || ' CASCADE';
-        
-        -- Drop role
+        role_name := 'HOL_USER_' || LPAD(i::VARCHAR, 2, '0');
         EXECUTE IMMEDIATE 'DROP ROLE IF EXISTS ' || role_name;
     END FOR;
 END;

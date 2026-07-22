@@ -105,10 +105,10 @@ describing the desired result, and Snowflake keeps it up-to-date automatically a
 st.markdown("#### Exercise 5.1 — Set context")
 
 st.code("""
-USE ROLE SYSADMIN;
-USE WAREHOUSE TU30_CORTEX_ANALYST_LAB_VWH;
-USE DATABASE TU30_CORTEX_ANALYST_LAB;
-USE SCHEMA RETAIL_BANKING;
+USE ROLE HOL_USER_XX;  -- Replace XX with your seat number
+USE WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH;
+USE DATABASE ZERO_TO_SNOWFLAKE_HOL;
+USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
 """, language="sql")
 
 st.markdown("#### Exercise 5.2 — Silver Layer: Enrich transactions")
@@ -120,7 +120,7 @@ Our bronze tables are raw and isolated. The silver layer **joins** them together
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE TRANSACTION_ENRICHED
     TARGET_LAG = '1 minute'
-    WAREHOUSE = TU30_CORTEX_ANALYST_LAB_VWH
+    WAREHOUSE = ZERO_TO_SNOWFLAKE_HOL_WH
 AS
 SELECT
     t.TRANSACTION_ID,
@@ -163,7 +163,7 @@ The gold layer reads from silver and produces **aggregated, consumption-ready me
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE PRODUCT_PERFORMANCE
     TARGET_LAG = '2 minutes'
-    WAREHOUSE = TU30_CORTEX_ANALYST_LAB_VWH
+    WAREHOUSE = ZERO_TO_SNOWFLAKE_HOL_WH
 AS
 SELECT
     PRODUCT_NAME,
@@ -233,7 +233,7 @@ st.markdown("""
 To see your medallion pipeline in Snowsight:
 
 1. Navigate to **Data → Databases**
-2. Expand `TU30_CORTEX_ANALYST_LAB` → `RETAIL_BANKING` → **Dynamic Tables**
+2. Expand `ZERO_TO_SNOWFLAKE_HOL` → `RETAIL_BANKING_XX` → **Dynamic Tables**
 3. Click on `PRODUCT_PERFORMANCE`
 4. Select the **Graph** tab
 
@@ -266,7 +266,7 @@ CoCo can build entire medallion pipelines from a description:
 | Check flow | `Query TRANSACTION_ENRICHED to see if the new deposits flowed through` |
 | Clean up | `Drop PRODUCT_PERFORMANCE and TRANSACTION_ENRICHED and delete today's $5000 test transactions` |
 
-You can also ask: `Show me the DAG for my dynamic tables in RETAIL_BANKING`
+You can also ask: `Show me the DAG for my dynamic tables in RETAIL_BANKING_XX`
 """)
 
 st.markdown("---")

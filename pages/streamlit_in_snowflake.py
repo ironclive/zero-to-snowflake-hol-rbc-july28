@@ -73,9 +73,9 @@ st.markdown("""
 2. Click **+ Streamlit App** (top-right)
 3. Configure:
    - **App name:** `Banking_Dashboard`
-   - **Warehouse:** `TU30_CORTEX_ANALYST_LAB_VWH`
-   - **Database:** `TU30_CORTEX_ANALYST_LAB`
-   - **Schema:** `RETAIL_BANKING`
+   - **Warehouse:** `ZERO_TO_SNOWFLAKE_HOL_WH`
+   - **Database:** `ZERO_TO_SNOWFLAKE_HOL`
+   - **Schema:** `RETAIL_BANKING_XX` (your seat number)
 4. Click **Create**
 """)
 
@@ -231,7 +231,7 @@ CoCo can build entire Streamlit apps from a description:
 | Add filters | `Add a sidebar selectbox to filter by CUSTOMER_SEGMENT` |
 | Add metrics | `Show KPI metrics for total customers, transactions, and volume at the top` |
 | Add a table | `Add a data table showing the 20 most recent transactions` |
-| Deploy | `Deploy this Streamlit app to Snowflake in the RETAIL_BANKING schema` |
+| Deploy | `Deploy this Streamlit app to Snowflake in my RETAIL_BANKING_XX schema` |
 
 CoCo writes the full Python code, tests it, and can deploy it — all from natural language.
 """)
