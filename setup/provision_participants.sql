@@ -101,23 +101,17 @@ BEGIN
 END;
 
 -- ============================================================
--- STEP 4: Marketplace grants
--- Run AFTER subscribing to "Snowflake Public Data (Free)" listing.
--- Uncomment and execute:
+-- STEP 4: Marketplace data (subscribe BEFORE the lab)
 -- ============================================================
-/*
-SET MARKETPLACE_DB = 'SNOWFLAKE_PUBLIC_DATA_FREE';
-
-BEGIN
-    LET i INTEGER := 1;
-    LET role_name VARCHAR;
-    
-    FOR i IN 1 TO $NUM_USERS DO
-        role_name := 'HOL_USER_' || LPAD(i::VARCHAR, 2, '0');
-        EXECUTE IMMEDIATE 'GRANT IMPORTED PRIVILEGES ON DATABASE ' || $MARKETPLACE_DB || ' TO ROLE ' || role_name;
-    END FOR;
-END;
-*/
+-- 1. Go to Data Products → Marketplace
+-- 2. Search for "Snowflake Public Data (Free)"
+-- 3. Click "Get"
+-- 4. In the dialog, under "Grant access to", select PUBLIC
+-- 5. Click "Get"
+--
+-- This grants IMPORTED PRIVILEGES to all users automatically.
+-- No additional SQL needed.
+-- ============================================================
 
 -- ============================================================
 -- VERIFICATION
