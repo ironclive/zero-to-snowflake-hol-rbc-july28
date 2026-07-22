@@ -5,6 +5,32 @@ st.markdown("**Duration:** ~20 minutes")
 st.markdown("---")
 
 st.markdown("""
+## Why Queries Are Fast (Even Without Tuning)
+
+Traditional databases require you to build indexes, partition tables, and tune queries manually. 
+Snowflake takes a different approach: it **automatically caches** results at multiple levels so 
+repeat queries are instant, and it lets you **clone entire databases in seconds** without copying data.
+
+**Key concepts for this section:**
+
+| Concept | What it means |
+|---------|--------------|
+| **Results Cache** | If you run the exact same query twice (same SQL, same data), Snowflake returns the cached result in milliseconds — no compute used. |
+| **Metadata Cache** | Simple queries like `COUNT(*)`, `MIN()`, `MAX()` are answered from metadata alone — no warehouse needed at all. |
+| **Warehouse Cache** | Data recently scanned is kept on local SSD. Subsequent queries on the same data are faster. |
+| **Zero-Copy Clone** | Create an instant, independent copy of a table, schema, or database. No data is duplicated — only changes are stored separately. |
+
+**Why this matters in banking:**
+- Dashboards that hit the same queries are essentially free (results cache)
+- Dev/test environments can be spun up in seconds from production data (cloning)
+- No storage penalty for maintaining development copies
+
+**In this section**, we'll observe caching in action and create a zero-copy clone.
+""")
+
+st.markdown("---")
+
+st.markdown("""
 ## Objectives
 
 By the end of this section, you will be able to:

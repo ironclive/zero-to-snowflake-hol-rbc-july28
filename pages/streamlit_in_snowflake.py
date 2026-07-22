@@ -6,6 +6,36 @@ st.markdown("**Duration:** ~20 minutes")
 
 st.markdown("---")
 
+st.markdown("""
+## What is Streamlit in Snowflake?
+
+**Streamlit** is a Python framework for building interactive data apps — dashboards, forms, 
+visualizations — with just a few lines of code. **Streamlit in Snowflake (SiS)** lets you run 
+these apps entirely inside your Snowflake account, with no external servers, no deployment 
+pipelines, and no data leaving Snowflake.
+
+**Key concepts for this section:**
+
+| Concept | What it means |
+|---------|--------------|
+| **Streamlit** | An open-source Python library where you write code like `st.bar_chart(data)` and get an interactive web app. |
+| **Streamlit in Snowflake** | Run Streamlit apps natively inside Snowflake. The app queries live data, respects all governance policies, and is shared via roles. |
+| **`get_active_session()`** | Connects your app to Snowflake — no credentials needed since you're already running inside the platform. |
+| **Snowpark** | Snowflake's Python API for querying and transforming data. Used in SiS apps to run SQL and get DataFrames. |
+| **Role-based sharing** | Share your app with any role in your account. Users see only the data their role permits (masking + row access apply automatically). |
+
+**Why this matters in banking:**
+- Build internal dashboards without provisioning web servers
+- Data never leaves Snowflake — no export, no external BI tool credentials
+- Governance policies (masking, row access) apply automatically to app queries
+- Non-technical stakeholders get self-service analytics with filters and charts
+- Apps can be built in minutes, not weeks
+
+**In this section**, we'll create a banking dashboard with filters, metrics, and charts — entirely inside Snowflake.
+""")
+
+st.markdown("---")
+
 st.header("Objectives")
 
 st.markdown("""

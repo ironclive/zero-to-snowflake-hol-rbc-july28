@@ -6,6 +6,35 @@ st.markdown("**Duration:** ~20 minutes")
 
 st.markdown("---")
 
+st.markdown("""
+## What are Dynamic Tables?
+
+In most data platforms, building a data pipeline means writing stored procedures, scheduling jobs 
+with cron or Airflow, and managing complex orchestration. Snowflake's **Dynamic Tables** eliminate 
+all of that — you just write a `SELECT` describing what you want, and Snowflake keeps the result 
+up-to-date automatically.
+
+**Key concepts for this section:**
+
+| Concept | What it means |
+|---------|--------------|
+| **Dynamic Table** | A table defined by a SQL query that Snowflake automatically refreshes when source data changes. |
+| **TARGET_LAG** | The maximum staleness you'll accept (e.g., `'1 minute'`). Snowflake ensures the table is never more stale than this. |
+| **Declarative** | You say *what* you want (the SELECT), not *how* to get there. No scheduling, no incremental logic, no orchestration. |
+| **Chaining** | Dynamic Tables can read from other Dynamic Tables, forming a pipeline (DAG). |
+| **Medallion Architecture** | A pattern organizing data into Bronze (raw), Silver (enriched), and Gold (business-ready) layers. |
+
+**Why this matters in banking:**
+- Risk dashboards need fresh data without complex ETL pipelines
+- Regulatory reporting requires traceable, repeatable transformations
+- Teams want to build pipelines without depending on data engineering for orchestration
+- The medallion pattern ensures data quality improves at each stage
+
+**In this section**, we'll build a Bronze → Silver → Gold pipeline using Dynamic Tables.
+""")
+
+st.markdown("---")
+
 st.header("Objectives")
 
 st.markdown("""

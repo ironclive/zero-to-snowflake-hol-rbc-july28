@@ -5,6 +5,27 @@ st.markdown("**Duration:** ~20 minutes")
 st.markdown("---")
 
 st.markdown("""
+## What is Snowflake?
+
+Snowflake is a **cloud data platform** — it stores and processes your data entirely in the cloud 
+(AWS, Azure, or GCP). Unlike traditional databases that require you to install software and manage 
+servers, Snowflake is fully managed: you just open a browser and start working.
+
+**Key things that make Snowflake different:**
+
+| Concept | What it means |
+|---------|--------------|
+| **Separation of storage & compute** | Your data is stored independently from the compute power that queries it. You can scale one without the other. |
+| **Virtual Warehouses** | These are your compute engines. They start in seconds, auto-suspend when idle, and you only pay for what you use. |
+| **Zero administration** | No indexes to build, no vacuuming, no tuning. Snowflake handles performance automatically. |
+| **Snowsight** | The web-based UI where you write SQL, explore data, build charts, and manage your account. |
+
+**In this section**, we'll tour Snowsight and get comfortable navigating before we start writing queries.
+""")
+
+st.markdown("---")
+
+st.markdown("""
 ## Objectives
 
 By the end of this section, you will be able to:

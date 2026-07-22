@@ -6,6 +6,33 @@ st.markdown("**Duration:** ~15 minutes")
 
 st.markdown("---")
 
+st.markdown("""
+## What is Time Travel?
+
+Every time data changes in Snowflake — an `INSERT`, `UPDATE`, `DELETE`, or `DROP` — Snowflake 
+automatically preserves the **previous version** of the data. This means you can query any table 
+as it existed at any point in the past, without configuring backups or snapshots.
+
+**Key concepts for this section:**
+
+| Concept | What it means |
+|---------|--------------|
+| **Time Travel** | Query historical data using `AT(OFFSET => -N)` or `AT(TIMESTAMP => '...')`. See what your table looked like 5 minutes ago, 1 hour ago, or yesterday. |
+| **UNDROP** | Instantly restore a dropped table, schema, or database. No restore process, no waiting — it's immediate. |
+| **Retention Period** | How long Snowflake keeps historical versions: 1 day (Standard edition), up to 90 days (Enterprise+). |
+| **No configuration** | Time Travel is always on. You don't enable it, configure it, or manage it. It just works. |
+
+**Why this matters in banking:**
+- Accidentally deleted customer records? Restore them in seconds.
+- Need to audit what data looked like at month-end? Query it directly.
+- Someone dropped a critical table? `UNDROP` brings it back instantly.
+- Compliance teams can verify data as-of any point within retention.
+
+**In this section**, we'll delete data, query it from the past, restore it, and recover a dropped table.
+""")
+
+st.markdown("---")
+
 st.header("Objectives")
 
 st.markdown("""

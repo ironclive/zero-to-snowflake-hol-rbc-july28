@@ -6,6 +6,33 @@ st.markdown("**Duration:** ~20 minutes")
 
 st.markdown("---")
 
+st.markdown("""
+## What is Data Governance in Snowflake?
+
+Data governance is about controlling **who can see what data** — without building separate databases 
+for every team or hardcoding restrictions into every application. Snowflake's governance framework, 
+called **Horizon**, lets you define rules once and enforce them everywhere, automatically.
+
+**Key concepts for this section:**
+
+| Concept | What it means |
+|---------|--------------|
+| **Role-Based Access Control (RBAC)** | Users are assigned roles; roles are granted privileges on objects. You never grant access to individual users directly. |
+| **Masking Policy** | A rule that dynamically replaces sensitive column values (e.g., email, income) based on who's querying. The real data stays intact — it's just hidden from unauthorized roles. |
+| **Row Access Policy** | A rule that silently filters rows based on the querying user's role. Restricted users simply don't see rows they shouldn't — no error, no empty result message. |
+| **Declarative** | Define a policy once, apply it to any column or table. Every query automatically respects the policy — no application changes needed. |
+
+**Why this matters in banking:**
+- **PIPEDA / OSFI compliance** — mask PII for non-authorized roles without creating separate views
+- **Multi-team access** — one table serves analysts, data scientists, and auditors with different visibility
+- **No data duplication** — instead of copying data into restricted schemas, policies enforce access at query time
+- **Auditability** — all access is logged; policies are centrally defined and easy to review
+
+**In this section**, we'll create masking policies to hide email/income and a row access policy to restrict by province.
+""")
+
+st.markdown("---")
+
 st.header("Objectives")
 
 st.markdown("""

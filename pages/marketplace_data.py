@@ -5,6 +5,34 @@ st.markdown("**Duration:** ~20 minutes")
 st.markdown("---")
 
 st.markdown("""
+## What is the Snowflake Marketplace?
+
+Traditionally, getting third-party data into your analytics platform means finding a provider, 
+negotiating access, setting up an FTP transfer or API integration, loading it into your warehouse, 
+and keeping it refreshed. The **Snowflake Marketplace** eliminates all of that.
+
+**Key concepts for this section:**
+
+| Concept | What it means |
+|---------|--------------|
+| **Marketplace** | A catalog of 2,000+ data listings from third-party providers, accessible directly inside Snowflake. |
+| **Data Sharing** | Marketplace data appears as a shared database in your account — no ETL, no loading, no storage costs. |
+| **Live data** | Providers maintain and refresh their data. You always see the latest version automatically. |
+| **Free & paid listings** | Many high-value datasets (economic indicators, weather, demographics) are completely free. |
+| **No data movement** | The data never leaves Snowflake's infrastructure. You `JOIN` it directly with your internal tables. |
+
+**Why this matters in banking:**
+- Enrich customer profiles with demographic or credit bureau data
+- Add economic indicators (unemployment, GDP, interest rates) to risk models
+- Bring in market data for portfolio analytics — no vendor integration needed
+- Compliance teams can reference regulatory datasets without separate infrastructure
+
+**In this section**, we'll subscribe to a free listing and join it with our banking data.
+""")
+
+st.markdown("---")
+
+st.markdown("""
 ## Objectives
 
 By the end of this section, you will be able to:

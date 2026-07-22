@@ -5,6 +5,33 @@ st.markdown("**Duration:** ~40 minutes")
 st.markdown("---")
 
 st.markdown("""
+## SQL in Snowflake — What You Need to Know
+
+Snowflake uses **standard ANSI SQL** — if you've written SQL before, you already know 90% of what 
+you need. Queries run in **worksheets** inside Snowsight, and results appear instantly below your code.
+
+**Key concepts for this section:**
+
+| Concept | What it means |
+|---------|--------------|
+| **SELECT** | Retrieve data from tables — the foundation of everything |
+| **JOIN** | Combine rows from multiple tables using a shared key (e.g., `CUSTOMER_ID`) |
+| **GROUP BY + Aggregates** | Summarize data: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX` |
+| **Window Functions** | Compute analytics across rows without collapsing results (e.g., `RANK`, `SUM() OVER`) |
+| **Date Functions** | `DATE_TRUNC`, `DAYNAME`, `DATEDIFF` — essential for time-series analysis |
+
+**How it works in Snowflake:**
+- Write SQL in a **worksheet** (like a scratch pad)
+- Highlight one or more statements and click **▶ Run**
+- Results appear below; you can sort columns, download CSV, or chart them directly
+- Snowflake compiles and optimizes your query automatically — no indexes or hints needed
+
+**In this section**, we'll write progressively complex queries across our banking dataset.
+""")
+
+st.markdown("---")
+
+st.markdown("""
 ## Objectives
 
 By the end of this section, you will be able to:
