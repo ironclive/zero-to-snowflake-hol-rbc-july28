@@ -102,14 +102,9 @@ st.markdown("""
 describing the desired result, and Snowflake keeps it up-to-date automatically as source data changes.
 """)
 
-st.markdown("#### Exercise 5.1 — Set context")
+st.markdown("#### Exercise 5.1 — Confirm your context")
 
-st.code("""
-USE ROLE HOL_USER_XX;  -- Replace XX with your seat number
-USE WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH;
-USE DATABASE ZERO_TO_SNOWFLAKE_HOL;
-USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
-""", language="sql")
+st.info("Make sure you're still using your assigned role and schema from Section 1. If not, re-run the `USE ROLE` / `USE SCHEMA` commands from the Snowflake UI Tour.")
 
 st.markdown("#### Exercise 5.2 — Silver Layer: Enrich transactions")
 

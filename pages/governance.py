@@ -75,16 +75,7 @@ A masking policy dynamically replaces column values at query time based on the r
 running the query. The underlying data is never modified.
 """)
 
-st.markdown("#### Exercise 6.1 — Set context")
-
-st.code("""
-USE ROLE HOL_USER_XX;  -- Replace XX with your seat number
-USE WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH;
-USE DATABASE ZERO_TO_SNOWFLAKE_HOL;
-USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
-""", language="sql")
-
-st.markdown("#### Exercise 6.2 — View sensitive data (before masking)")
+st.markdown("#### Exercise 6.1 — View sensitive data (before masking)")
 
 st.code("""
 -- With your HOL_USER role, you can see all data
@@ -98,7 +89,7 @@ FROM CUSTOMERS
 LIMIT 10;
 """, language="sql")
 
-st.markdown("#### Exercise 6.3 — Create a masking policy for email")
+st.markdown("#### Exercise 6.1 — Create a masking policy for email")
 
 st.code("""
 CREATE OR REPLACE MASKING POLICY EMAIL_MASK AS (val STRING)
@@ -110,7 +101,7 @@ RETURNS STRING ->
     END;
 """, language="sql")
 
-st.markdown("#### Exercise 6.4 — Apply the masking policy")
+st.markdown("#### Exercise 6.1 — Apply the masking policy")
 
 st.code("""
 ALTER TABLE CUSTOMERS
@@ -118,7 +109,7 @@ ALTER TABLE CUSTOMERS
     SET MASKING POLICY EMAIL_MASK;
 """, language="sql")
 
-st.markdown("#### Exercise 6.5 — Create a masking policy for income")
+st.markdown("#### Exercise 6.1 — Create a masking policy for income")
 
 st.code("""
 CREATE OR REPLACE MASKING POLICY INCOME_MASK AS (val NUMBER)
@@ -134,7 +125,7 @@ ALTER TABLE CUSTOMERS
     SET MASKING POLICY INCOME_MASK;
 """, language="sql")
 
-st.markdown("#### Exercise 6.6 — Test the masking (your role sees full data)")
+st.markdown("#### Exercise 6.1 — Test the masking (your role sees full data)")
 
 st.code("""
 -- With your HOL role, you still see full data
@@ -157,7 +148,7 @@ Row access policies filter which **rows** a user can see. This is powerful for m
 scenarios or restricting access by geography, business unit, or segment.
 """)
 
-st.markdown("#### Exercise 6.7 — Create a row access policy")
+st.markdown("#### Exercise 6.1 — Create a row access policy")
 
 st.code("""
 -- Only allow non-admin roles to see customers in Ontario
@@ -170,14 +161,14 @@ RETURNS BOOLEAN ->
     END;
 """, language="sql")
 
-st.markdown("#### Exercise 6.8 — Apply the row access policy")
+st.markdown("#### Exercise 6.1 — Apply the row access policy")
 
 st.code("""
 ALTER TABLE CUSTOMERS
     ADD ROW ACCESS POLICY PROVINCE_ACCESS ON (PROVINCE);
 """, language="sql")
 
-st.markdown("#### Exercise 6.9 — Verify (your role sees all rows)")
+st.markdown("#### Exercise 6.1 — Verify (your role sees all rows)")
 
 st.code("""
 SELECT PROVINCE, COUNT(*) AS customer_count

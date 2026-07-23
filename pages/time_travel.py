@@ -67,11 +67,6 @@ st.header("Part B: Querying Historical Data")
 st.markdown("#### Exercise 4.1 — Check current row count")
 
 st.code("""
-USE ROLE HOL_USER_XX;  -- Replace XX with your seat number
-USE WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH;
-USE DATABASE ZERO_TO_SNOWFLAKE_HOL;
-USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
-
 SELECT COUNT(*) AS current_count FROM CUSTOMERS;
 """, language="sql")
 
