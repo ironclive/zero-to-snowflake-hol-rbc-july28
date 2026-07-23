@@ -9,11 +9,7 @@ st.markdown("---")
 st.header("Step 1: Log in to Snowflake")
 
 st.info("""
-Your instructor will provide you with:
-- A **Snowflake account URL** (either the AWS or Azure sandbox)
-- Your **username** and **password**
-
-Open the account URL in your browser and log in with the credentials provided.
+Open your Snowflake URL and log in.
 """)
 
 st.markdown("---")
