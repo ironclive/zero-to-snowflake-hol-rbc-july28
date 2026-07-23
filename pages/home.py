@@ -68,7 +68,7 @@ st.markdown("---")
 st.markdown("### Prerequisites")
 
 st.markdown("""
-- Access to a Snowflake account (trial or provisioned sandbox)
+- Access to a Snowflake account in the RBC AZ or AWS Sandbox
 - Basic SQL knowledge (SELECT, WHERE, JOIN, GROUP BY)
 - A modern web browser (Chrome, Edge, Firefox)
 """)
