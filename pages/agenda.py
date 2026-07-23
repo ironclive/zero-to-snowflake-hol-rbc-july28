@@ -31,7 +31,7 @@ st.info("""
 
 **Format:**
 - Each section combines brief instructor guidance with hands-on exercises
-- Work at your own pace — raise your hand if you need help
+- Follow along with the instructor — raise your hand if you need help
 - CoCo Sneak Peeks in each section show how Cortex Code can accelerate your workflow
 """)
 
