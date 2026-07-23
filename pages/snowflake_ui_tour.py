@@ -87,9 +87,9 @@ In your new worksheet, set the session context by running:
 """)
 
 st.code("""
-USE ROLE HOL_USER_XX;  -- Replace XX with your seat number
-USE WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH;
-USE DATABASE ZERO_TO_SNOWFLAKE_HOL;
+USE ROLE TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX;  -- Replace XX with your seat number
+USE WAREHOUSE TU30_ZERO_TO_SNOWFLAKE_LAB_WH;
+USE DATABASE TU30_ZERO_TO_SNOWFLAKE_LAB;
 USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
 """, language="sql")
 
@@ -103,7 +103,7 @@ st.markdown("""
 Navigate to **Data → Databases** and drill into:
 
 ```
-ZERO_TO_SNOWFLAKE_HOL → RETAIL_BANKING_XX → Tables
+TU30_ZERO_TO_SNOWFLAKE_LAB → RETAIL_BANKING_XX → Tables
 ```
 
 You should see three tables: **CUSTOMERS**, **PRODUCTS**, **TRANSACTIONS**.
@@ -148,7 +148,7 @@ Instead of navigating the UI manually, you could ask **Cortex Code (CoCo)** to d
 
 | What you did | CoCo prompt |
 |-------------|-------------|
-| Set context | `Use role HOL_USER_XX, warehouse ZERO_TO_SNOWFLAKE_HOL_WH, database ZERO_TO_SNOWFLAKE_HOL, schema RETAIL_BANKING_XX` |
+| Set context | `Use role TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX, warehouse TU30_ZERO_TO_SNOWFLAKE_LAB_WH, database TU30_ZERO_TO_SNOWFLAKE_LAB, schema RETAIL_BANKING_XX` |
 | Browse tables | `What tables are in my current schema?` |
 | Preview data | `Show me the first 10 rows of CUSTOMERS` |
 | Check row counts | `How many rows are in each table in my schema?` |

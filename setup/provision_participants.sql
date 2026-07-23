@@ -4,9 +4,9 @@
   Run as: ACCOUNTADMIN
   
   This script creates:
-    - A dedicated database (ZERO_TO_SNOWFLAKE_HOL)
-    - A shared warehouse (ZERO_TO_SNOWFLAKE_HOL_WH)
-    - 30 roles (HOL_USER_01 .. HOL_USER_30) granted to PUBLIC
+    - A dedicated database (TU30_ZERO_TO_SNOWFLAKE_LAB)
+    - A shared warehouse (TU30_ZERO_TO_SNOWFLAKE_LAB_WH)
+    - 30 roles (TU30_ZERO_TO_SNOWFLAKE_LAB_USER_01 .. TU30_ZERO_TO_SNOWFLAKE_LAB_USER_30) granted to PUBLIC
     - 30 schemas cloned from RETAIL_BANKING (RETAIL_BANKING_01 .. _30)
     - All necessary grants for every exercise in the HOL
     
@@ -20,10 +20,10 @@
 -- ============================================================
 -- CONFIGURATION
 -- ============================================================
-SET DB_NAME       = 'ZERO_TO_SNOWFLAKE_HOL';
+SET DB_NAME       = 'TU30_ZERO_TO_SNOWFLAKE_LAB';
 SET SOURCE_DB     = 'TU30_CORTEX_ANALYST_LAB';
 SET SOURCE_SCHEMA = 'RETAIL_BANKING';
-SET WAREHOUSE     = 'ZERO_TO_SNOWFLAKE_HOL_WH';
+SET WAREHOUSE     = 'TU30_ZERO_TO_SNOWFLAKE_LAB_WH';
 SET NUM_USERS     = 30;
 
 USE ROLE ACCOUNTADMIN;
@@ -55,7 +55,7 @@ BEGIN
     LET schema_name VARCHAR;
     
     FOR i IN 1 TO $NUM_USERS DO
-        role_name   := 'HOL_USER_' || LPAD(i::VARCHAR, 2, '0');
+        role_name   := 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_' || LPAD(i::VARCHAR, 2, '0');
         schema_name := $SOURCE_SCHEMA || '_' || LPAD(i::VARCHAR, 2, '0');
         
         -- Create the role
@@ -116,19 +116,19 @@ END;
 -- ============================================================
 -- VERIFICATION
 -- ============================================================
-SHOW ROLES LIKE 'HOL_USER_%';
-SHOW SCHEMAS IN DATABASE ZERO_TO_SNOWFLAKE_HOL STARTS WITH 'RETAIL_BANKING_';
+SHOW ROLES LIKE 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_%';
+SHOW SCHEMAS IN DATABASE TU30_ZERO_TO_SNOWFLAKE_LAB STARTS WITH 'RETAIL_BANKING_';
 SELECT COUNT(*) AS schema_count FROM INFORMATION_SCHEMA.SCHEMATA 
-WHERE CATALOG_NAME = 'ZERO_TO_SNOWFLAKE_HOL' AND SCHEMA_NAME LIKE 'RETAIL_BANKING_%';
+WHERE CATALOG_NAME = 'TU30_ZERO_TO_SNOWFLAKE_LAB' AND SCHEMA_NAME LIKE 'RETAIL_BANKING_%';
 
 -- ============================================================
--- GRANTS SUMMARY PER ROLE (HOL_USER_XX)
+-- GRANTS SUMMARY PER ROLE (TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX)
 -- ============================================================
 --
 -- ROLE ACCESSIBILITY:
---   ✅ Granted to PUBLIC — participants USE ROLE HOL_USER_XX (seat number)
+--   ✅ Granted to PUBLIC — participants USE ROLE TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX (seat number)
 --
--- DATABASE (ZERO_TO_SNOWFLAKE_HOL):
+-- DATABASE (TU30_ZERO_TO_SNOWFLAKE_LAB):
 --   ✅ USAGE
 --   ✅ CREATE SCHEMA (for clone exercise in Section 3)
 --
@@ -144,7 +144,7 @@ WHERE CATALOG_NAME = 'ZERO_TO_SNOWFLAKE_HOL' AND SCHEMA_NAME LIKE 'RETAIL_BANKIN
 -- SOURCE SCHEMA (RETAIL_BANKING):
 --   ✅ USAGE + SELECT (read-only reference)
 --
--- WAREHOUSE (ZERO_TO_SNOWFLAKE_HOL_WH):
+-- WAREHOUSE (TU30_ZERO_TO_SNOWFLAKE_LAB_WH):
 --   ✅ USAGE (run queries)
 --   ✅ OPERATE (suspend/resume for cache exercise)
 --
@@ -161,8 +161,8 @@ WHERE CATALOG_NAME = 'ZERO_TO_SNOWFLAKE_HOL' AND SCHEMA_NAME LIKE 'RETAIL_BANKIN
 USE ROLE ACCOUNTADMIN;
 
 -- Drop the entire HOL database (removes all 30 schemas + source)
-DROP DATABASE IF EXISTS ZERO_TO_SNOWFLAKE_HOL;
-DROP WAREHOUSE IF EXISTS ZERO_TO_SNOWFLAKE_HOL_WH;
+DROP DATABASE IF EXISTS TU30_ZERO_TO_SNOWFLAKE_LAB;
+DROP WAREHOUSE IF EXISTS TU30_ZERO_TO_SNOWFLAKE_LAB_WH;
 
 -- Drop all roles
 BEGIN
@@ -170,7 +170,7 @@ BEGIN
     LET role_name VARCHAR;
     
     FOR i IN 1 TO 30 DO
-        role_name := 'HOL_USER_' || LPAD(i::VARCHAR, 2, '0');
+        role_name := 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_' || LPAD(i::VARCHAR, 2, '0');
         EXECUTE IMMEDIATE 'DROP ROLE IF EXISTS ' || role_name;
     END FOR;
 END;

@@ -78,7 +78,7 @@ running the query. The underlying data is never modified.
 st.markdown("#### Exercise 6.1 — View sensitive data (before masking)")
 
 st.code("""
--- With your HOL_USER role, you can see all data
+-- With your lab role, you can see all data
 SELECT
     CUSTOMER_ID,
     FIRST_NAME,
@@ -95,7 +95,7 @@ st.code("""
 CREATE OR REPLACE MASKING POLICY EMAIL_MASK AS (val STRING)
 RETURNS STRING ->
     CASE
-        WHEN CURRENT_ROLE() LIKE 'HOL_USER_%'
+        WHEN CURRENT_ROLE() LIKE 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_%'
             THEN val
         ELSE REGEXP_REPLACE(val, '.+@', '****@')
     END;
@@ -115,7 +115,7 @@ st.code("""
 CREATE OR REPLACE MASKING POLICY INCOME_MASK AS (val NUMBER)
 RETURNS NUMBER ->
     CASE
-        WHEN CURRENT_ROLE() LIKE 'HOL_USER_%'
+        WHEN CURRENT_ROLE() LIKE 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_%'
             THEN val
         ELSE NULL
     END;
@@ -128,13 +128,13 @@ ALTER TABLE CUSTOMERS
 st.markdown("#### Exercise 6.1 — Test the masking (your role sees full data)")
 
 st.code("""
--- With your HOL role, you still see full data
+-- With your lab role, you still see full data
 SELECT CUSTOMER_ID, EMAIL, ANNUAL_INCOME
 FROM CUSTOMERS LIMIT 5;
 """, language="sql")
 
 st.success("""
-**What happened?** With your HOL_USER role, you see the real data. If a role NOT matching HOL_USER_% queries the same 
+**What happened?** With your lab role, you see the real data. If a role NOT matching TU30_ZERO_TO_SNOWFLAKE_LAB_USER_% queries the same 
 table, emails would show as `****@domain.com` and income would show as `NULL` — same table, 
 same query, different results based on role.
 """)
@@ -155,7 +155,7 @@ st.code("""
 CREATE OR REPLACE ROW ACCESS POLICY PROVINCE_ACCESS AS (province_val VARCHAR)
 RETURNS BOOLEAN ->
     CASE
-        WHEN CURRENT_ROLE() LIKE 'HOL_USER_%'
+        WHEN CURRENT_ROLE() LIKE 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_%'
             THEN TRUE
         ELSE province_val = 'Ontario'
     END;
@@ -178,7 +178,7 @@ ORDER BY customer_count DESC;
 """, language="sql")
 
 st.success("""
-**What happened?** With your HOL_USER role, you see all provinces. Any other role would only see Ontario 
+**What happened?** With your lab role, you see all provinces. Any other role would only see Ontario 
 customers — the other rows are silently filtered out. No errors, no empty results messaging — 
 the user simply never sees data they shouldn't.
 """)

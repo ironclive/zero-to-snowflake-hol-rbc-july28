@@ -73,8 +73,8 @@ st.markdown("""
 2. Click **+ Streamlit App** (top-right)
 3. Configure:
    - **App name:** `Banking_Dashboard`
-   - **Warehouse:** `ZERO_TO_SNOWFLAKE_HOL_WH`
-   - **Database:** `ZERO_TO_SNOWFLAKE_HOL`
+   - **Warehouse:** `TU30_ZERO_TO_SNOWFLAKE_LAB_WH`
+   - **Database:** `TU30_ZERO_TO_SNOWFLAKE_LAB`
    - **Schema:** `RETAIL_BANKING_XX` (your seat number)
 4. Click **Create**
 """)

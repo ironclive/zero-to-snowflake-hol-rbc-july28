@@ -115,7 +115,7 @@ Our bronze tables are raw and isolated. The silver layer **joins** them together
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE TRANSACTION_ENRICHED
     TARGET_LAG = '1 minute'
-    WAREHOUSE = ZERO_TO_SNOWFLAKE_HOL_WH
+    WAREHOUSE = TU30_ZERO_TO_SNOWFLAKE_LAB_WH
 AS
 SELECT
     t.TRANSACTION_ID,
@@ -158,7 +158,7 @@ The gold layer reads from silver and produces **aggregated, consumption-ready me
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE PRODUCT_PERFORMANCE
     TARGET_LAG = '2 minutes'
-    WAREHOUSE = ZERO_TO_SNOWFLAKE_HOL_WH
+    WAREHOUSE = TU30_ZERO_TO_SNOWFLAKE_LAB_WH
 AS
 SELECT
     PRODUCT_NAME,
@@ -228,7 +228,7 @@ st.markdown("""
 To see your medallion pipeline in Snowsight:
 
 1. Navigate to **Data → Databases**
-2. Expand `ZERO_TO_SNOWFLAKE_HOL` → `RETAIL_BANKING_XX` → **Dynamic Tables**
+2. Expand `TU30_ZERO_TO_SNOWFLAKE_LAB` → `RETAIL_BANKING_XX` → **Dynamic Tables**
 3. Click on `PRODUCT_PERFORMANCE`
 4. Select the **Graph** tab
 

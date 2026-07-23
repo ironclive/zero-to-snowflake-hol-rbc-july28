@@ -103,7 +103,7 @@ Some queries don't need a warehouse at all. Try these with your warehouse **susp
 
 st.code("""
 -- Suspend your warehouse first
-ALTER WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH SUSPEND;
+ALTER WAREHOUSE TU30_ZERO_TO_SNOWFLAKE_LAB_WH SUSPEND;
 
 -- These still work (metadata cache)!
 SELECT COUNT(*) FROM CUSTOMERS;
@@ -115,7 +115,7 @@ st.success("These queries return instantly because Snowflake stores metadata (ro
 
 st.code("""
 -- Resume the warehouse for the next exercises
-ALTER WAREHOUSE ZERO_TO_SNOWFLAKE_HOL_WH RESUME;
+ALTER WAREHOUSE TU30_ZERO_TO_SNOWFLAKE_LAB_WH RESUME;
 """, language="sql")
 
 st.markdown("---")
@@ -141,8 +141,8 @@ st.markdown("### Exercise: Clone and Modify")
 st.markdown("**Step 1:** Clone the entire RETAIL_BANKING schema:")
 
 st.code("""
-CREATE SCHEMA ZERO_TO_SNOWFLAKE_HOL.RETAIL_BANKING_CLONE
-  CLONE ZERO_TO_SNOWFLAKE_HOL.RETAIL_BANKING;
+CREATE SCHEMA TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_CLONE
+  CLONE TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING;
 """, language="sql")
 
 st.markdown("**Step 2:** Verify the clone has the same data:")
@@ -177,7 +177,7 @@ st.success("The original data is completely untouched. This is the power of zero
 st.markdown("**Step 5:** Clean up — drop the clone:")
 
 st.code("""
-DROP SCHEMA ZERO_TO_SNOWFLAKE_HOL.RETAIL_BANKING_CLONE;
+DROP SCHEMA TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_CLONE;
 """, language="sql")
 
 st.markdown("---")
@@ -189,7 +189,7 @@ CoCo can help you explore caching and cloning conversationally:
 | What you did | CoCo prompt |
 |-------------|-------------|
 | Run a query twice | `Run this query and tell me the execution time, then run it again` |
-| Test metadata cache | `Suspend ZERO_TO_SNOWFLAKE_HOL_WH, then get the row count of CUSTOMERS` |
+| Test metadata cache | `Suspend TU30_ZERO_TO_SNOWFLAKE_LAB_WH, then get the row count of CUSTOMERS` |
 | Clone a schema | `Create a clone of RETAIL_BANKING called RETAIL_BANKING_CLONE` |
 | Modify the clone | `Delete all Alberta customers from RETAIL_BANKING_CLONE` |
 | Verify isolation | `Compare customer counts between RETAIL_BANKING and RETAIL_BANKING_CLONE` |
