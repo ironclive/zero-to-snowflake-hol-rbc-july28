@@ -34,16 +34,3 @@ st.info("""
 - Follow along with the instructor — raise your hand if you need help
 - CoCo Sneak Peeks in each section show how Cortex Code can accelerate your workflow
 """)
-
-st.markdown("---")
-
-st.markdown("### What to have ready")
-
-st.markdown("""
-| Item | Details |
-|------|---------|
-| 🌐 Browser | Chrome, Edge, or Firefox |
-| 🔑 Snowflake login | Credentials provided at check-in |
-| 📋 Your schema | `RETAIL_BANKING_XX` (assigned seat number) |
-| 📖 This guide | Keep open in a separate tab |
-""")
