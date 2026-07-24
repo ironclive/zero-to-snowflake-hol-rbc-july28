@@ -146,8 +146,8 @@ doesn't copy any data — it creates a new metadata pointer to the **same underl
 ```
 
 - **At clone time:** Both tables point to the same partitions → **zero additional storage cost**
-- **When you modify the clone:** Only the *changed* partitions are written as new data. The original remains untouched.
-- **Result:** A 10 TB table clones in seconds and costs nothing until you start making changes.
+- **When you modify the clone:** Only the *changed* micro-partitions are written as new data. You pay for storage of those changed partitions only — not the entire cloned table.
+- **Result:** A 10 TB table clones in seconds. If you modify 1 GB of data in the clone, you only pay for 1 GB of additional storage.
 
 This is incredibly powerful for:
 - Development & testing (full production copy, no storage bill)
