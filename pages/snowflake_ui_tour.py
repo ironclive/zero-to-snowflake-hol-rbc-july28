@@ -88,7 +88,7 @@ In your new SQL file, set the session context by running:
 
 st.code("""
 USE ROLE TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX;  -- Replace XX with your seat number
-USE WAREHOUSE TU30_ZERO_TO_SNOWFLAKE_LAB_WH;
+USE WAREHOUSE COMPUTE_WH;
 USE DATABASE TU30_ZERO_TO_SNOWFLAKE_LAB;
 USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
 """, language="sql")
@@ -148,7 +148,7 @@ Instead of navigating the UI manually, you could ask **Cortex Code (CoCo)** to d
 
 | What you did | CoCo prompt |
 |-------------|-------------|
-| Set context | `Use role TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX, warehouse TU30_ZERO_TO_SNOWFLAKE_LAB_WH, database TU30_ZERO_TO_SNOWFLAKE_LAB, schema RETAIL_BANKING_XX` |
+| Set context | `Use role TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX, warehouse COMPUTE_WH, database TU30_ZERO_TO_SNOWFLAKE_LAB, schema RETAIL_BANKING_XX` |
 | Browse tables | `What tables are in my current schema?` |
 | Preview data | `Show me the first 10 rows of CUSTOMERS` |
 | Check row counts | `How many rows are in each table in my schema?` |

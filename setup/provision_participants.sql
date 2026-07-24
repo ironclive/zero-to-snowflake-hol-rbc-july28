@@ -5,7 +5,7 @@
   
   This script creates:
     - A dedicated database (TU30_ZERO_TO_SNOWFLAKE_LAB)
-    - A shared warehouse (TU30_ZERO_TO_SNOWFLAKE_LAB_WH)
+    - A shared warehouse (COMPUTE_WH)
     - 30 roles (TU30_ZERO_TO_SNOWFLAKE_LAB_USER_01 .. TU30_ZERO_TO_SNOWFLAKE_LAB_USER_30) granted to PUBLIC
     - 30 schemas cloned from RETAIL_BANKING (RETAIL_BANKING_01 .. _30)
     - All necessary grants for every exercise in the HOL
@@ -23,7 +23,7 @@
 SET DB_NAME       = 'TU30_ZERO_TO_SNOWFLAKE_LAB';
 SET SOURCE_DB     = 'TU30_CORTEX_ANALYST_LAB';
 SET SOURCE_SCHEMA = 'RETAIL_BANKING';
-SET WAREHOUSE     = 'TU30_ZERO_TO_SNOWFLAKE_LAB_WH';
+SET WAREHOUSE     = 'COMPUTE_WH';
 SET NUM_USERS     = 30;
 
 USE ROLE ACCOUNTADMIN;
@@ -144,7 +144,7 @@ WHERE CATALOG_NAME = 'TU30_ZERO_TO_SNOWFLAKE_LAB' AND SCHEMA_NAME LIKE 'RETAIL_B
 -- SOURCE SCHEMA (RETAIL_BANKING):
 --   ✅ USAGE + SELECT (read-only reference)
 --
--- WAREHOUSE (TU30_ZERO_TO_SNOWFLAKE_LAB_WH):
+-- WAREHOUSE (COMPUTE_WH):
 --   ✅ USAGE (run queries)
 --   ✅ OPERATE (suspend/resume for cache exercise)
 --
@@ -162,7 +162,7 @@ USE ROLE ACCOUNTADMIN;
 
 -- Drop the entire HOL database (removes all 30 schemas + source)
 DROP DATABASE IF EXISTS TU30_ZERO_TO_SNOWFLAKE_LAB;
-DROP WAREHOUSE IF EXISTS TU30_ZERO_TO_SNOWFLAKE_LAB_WH;
+DROP WAREHOUSE IF EXISTS COMPUTE_WH;
 
 -- Drop all roles
 BEGIN

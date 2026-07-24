@@ -115,7 +115,7 @@ Our bronze tables are raw and isolated. The silver layer **joins** them together
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE TRANSACTION_ENRICHED
     TARGET_LAG = '1 minute'
-    WAREHOUSE = TU30_ZERO_TO_SNOWFLAKE_LAB_WH
+    WAREHOUSE = COMPUTE_WH
 AS
 SELECT
     t.TRANSACTION_ID,
@@ -158,7 +158,7 @@ The gold layer reads from silver and produces **aggregated, consumption-ready me
 st.code("""
 CREATE OR REPLACE DYNAMIC TABLE PRODUCT_PERFORMANCE
     TARGET_LAG = '2 minutes'
-    WAREHOUSE = TU30_ZERO_TO_SNOWFLAKE_LAB_WH
+    WAREHOUSE = COMPUTE_WH
 AS
 SELECT
     PRODUCT_NAME,
