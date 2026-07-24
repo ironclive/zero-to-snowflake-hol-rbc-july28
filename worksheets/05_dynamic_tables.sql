@@ -93,9 +93,8 @@ WHERE AMOUNT = 5000.00 AND TRANSACTION_DATE = CURRENT_DATE();
 -- Exercise 5.8: Verify the $15,000 shows up in Gold
 -- Wait ~2 more minutes (TARGET_LAG = '2 minutes'), then run:
 SELECT * FROM PRODUCT_PERFORMANCE
-ORDER BY revenue_rank
-LIMIT 5;
--- Look for Product ID 1: total_transactions +3, total_revenue +$15,000
+ORDER BY revenue_rank;
+-- Look for "Essential Chequing": total_transactions +3, total_revenue +$15,000
 
 -- ============================================================
 -- CLEAN UP

@@ -248,12 +248,11 @@ Wait **~2 more minutes** (the Gold layer has `TARGET_LAG = '2 minutes'`), then r
 
 st.code("""
 SELECT * FROM PRODUCT_PERFORMANCE
-ORDER BY revenue_rank
-LIMIT 5;
+ORDER BY revenue_rank;
 """, language="sql")
 
 st.success("""
-**What to look for:** Find the product associated with Product ID 1. Its `total_transactions` 
+**What to look for:** Find **Essential Chequing** (Product ID 1). Its `total_transactions` 
 should have increased by 3 and its `total_revenue` should have increased by \\$15,000. 
 The extra revenue may even have changed its `revenue_rank`!
 
