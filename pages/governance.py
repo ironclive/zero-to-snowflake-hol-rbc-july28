@@ -77,6 +77,8 @@ running the query. The underlying data is never modified.
 
 st.markdown("#### Exercise 7.1 — View sensitive data (before masking)")
 
+st.warning("⚠️ Same neighbor as before — they must have completed Exercises 7.7–7.9 for the row access policy to be in effect.")
+
 st.code("""
 -- With your lab role, you can see all data
 SELECT
@@ -142,7 +144,7 @@ st.success("✅ You should see real email addresses and income values — your r
 
 st.markdown("#### Exercise 7.6 — Test: Query ANOTHER participant's schema (masked)")
 
-st.warning("⚠️ **Pick a neighbor's schema number** (e.g., if you are User 05, try RETAIL_BANKING_03).")
+st.warning("⚠️ **Pick a neighbor's schema number** (e.g., if you are User 05, try RETAIL_BANKING_03). Your neighbor must have completed Exercises 7.2–7.5 for this to work — if they haven't applied their masking policy yet, you'll see unmasked data.")
 
 st.code("""
 -- Query another participant's table — your role does NOT match their policy
