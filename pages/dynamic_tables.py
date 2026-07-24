@@ -189,7 +189,15 @@ st.markdown("---")
 
 st.header("Part C: Simulate a Data Change")
 
-st.markdown("#### Exercise 5.6 — Insert new transactions into Bronze")
+st.markdown("""
+Now let's see the pipeline in action. We'll insert **3 new transactions** into the Bronze layer 
+(the `TRANSACTIONS` table) and then verify they automatically flow through to Silver and Gold.
+
+We're inserting 3 × \\$5,000 deposits — that's \\$15,000 of new revenue that should be easy to spot 
+when it appears in the downstream layers.
+""")
+
+st.markdown("#### Exercise 5.6 — Insert 3 new transactions into Bronze")
 
 st.code("""
 INSERT INTO TRANSACTIONS (TRANSACTION_ID, CUSTOMER_ID, PRODUCT_ID, TRANSACTION_DATE, TRANSACTION_TYPE, AMOUNT, BALANCE_AFTER, CHANNEL, MERCHANT_CATEGORY, STATUS)
@@ -208,18 +216,50 @@ FROM (SELECT MAX(TRANSACTION_ID) AS max_id FROM TRANSACTIONS) m,
      TABLE(GENERATOR(ROWCOUNT => 3));
 """, language="sql")
 
-st.markdown("#### Exercise 5.7 — Watch data flow through the layers")
+st.info("""
+**What this does:** Inserts 3 rows of \\$5,000 each into the `TRANSACTIONS` table (Bronze layer). 
+The `GENERATOR(ROWCOUNT => 3)` produces 3 rows, and `SEQ4()` gives each one a unique ID.
+
+You should see: **"3 rows inserted"**
+""")
+
+st.markdown("#### Exercise 5.7 — Verify the data flows to Silver")
+
+st.markdown("""
+Wait **~1 minute** (the Silver layer has `TARGET_LAG = '1 minute'`), then run:
+""")
 
 st.code("""
--- After ~1 minute: check silver layer picked up new rows
 SELECT * FROM TRANSACTION_ENRICHED
 WHERE AMOUNT = 5000.00 AND TRANSACTION_DATE = CURRENT_DATE();
+""", language="sql")
 
--- After ~2 minutes: check gold layer updated revenue
+st.success("""
+**Expected result:** 3 rows — your \\$5,000 deposits, now enriched with customer name, 
+segment, province, product name, and category. The Dynamic Table automatically joined 
+them with CUSTOMERS and PRODUCTS.
+""")
+
+st.markdown("#### Exercise 5.8 — Verify the data flows to Gold")
+
+st.markdown("""
+Wait **~2 more minutes** (the Gold layer has `TARGET_LAG = '2 minutes'`), then run:
+""")
+
+st.code("""
 SELECT * FROM PRODUCT_PERFORMANCE
 ORDER BY revenue_rank
 LIMIT 5;
 """, language="sql")
+
+st.success("""
+**What to look for:** Find the product associated with Product ID 1. Its `total_transactions` 
+should have increased by 3 and its `total_revenue` should have increased by \\$15,000. 
+The extra revenue may even have changed its `revenue_rank`!
+
+This is the power of Dynamic Tables — one INSERT into Bronze, and the entire pipeline 
+updates automatically. No scheduling, no orchestration, no code to maintain.
+""")
 
 st.markdown("---")
 

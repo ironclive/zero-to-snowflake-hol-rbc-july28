@@ -62,9 +62,12 @@ ORDER BY revenue_rank;
 
 -- ============================================================
 -- SIMULATE A DATA CHANGE
+-- Insert 3 x $5,000 deposits into Bronze, then verify they
+-- flow automatically into Silver (enriched) and Gold (aggregated)
 -- ============================================================
 
--- Exercise 5.6: Insert new transactions into Bronze
+-- Exercise 5.6: Insert 3 new transactions into Bronze
+-- This inserts 3 rows of $5,000 each (= $15,000 total new revenue)
 INSERT INTO TRANSACTIONS (TRANSACTION_ID, CUSTOMER_ID, PRODUCT_ID, TRANSACTION_DATE, TRANSACTION_TYPE, AMOUNT, BALANCE_AFTER, CHANNEL, MERCHANT_CATEGORY, STATUS)
 SELECT
     m.max_id + SEQ4() + 1,
@@ -79,16 +82,20 @@ SELECT
     'Completed'
 FROM (SELECT MAX(TRANSACTION_ID) AS max_id FROM TRANSACTIONS) m,
      TABLE(GENERATOR(ROWCOUNT => 3));
+-- Expected result: "3 rows inserted"
 
--- Exercise 5.7: Watch data flow through the layers
--- Wait ~1 minute, then check silver layer
+-- Exercise 5.7: Verify the 3 transactions appear in Silver
+-- Wait ~1 minute (TARGET_LAG = '1 minute'), then run:
 SELECT * FROM TRANSACTION_ENRICHED
 WHERE AMOUNT = 5000.00 AND TRANSACTION_DATE = CURRENT_DATE();
+-- Expected: 3 rows — your deposits now enriched with customer & product details
 
--- Wait ~2 minutes, then check gold layer
+-- Exercise 5.8: Verify the $15,000 shows up in Gold
+-- Wait ~2 more minutes (TARGET_LAG = '2 minutes'), then run:
 SELECT * FROM PRODUCT_PERFORMANCE
 ORDER BY revenue_rank
 LIMIT 5;
+-- Look for Product ID 1: total_transactions +3, total_revenue +$15,000
 
 -- ============================================================
 -- CLEAN UP
