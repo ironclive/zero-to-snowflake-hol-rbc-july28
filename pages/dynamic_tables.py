@@ -252,9 +252,15 @@ ORDER BY revenue_rank;
 """, language="sql")
 
 st.success("""
-**What to look for:** Find **Essential Chequing** (Product ID 1). Its `total_transactions` 
-should have increased by 3 and its `total_revenue` should have increased by \\$15,000. 
-The extra revenue may even have changed its `revenue_rank`!
+**What to look for:** Find **Essential Chequing** in the results. Before the insert, its baseline was:
+
+- `total_transactions` = **70**
+- `total_revenue` = **-$9,193.83**
+
+After the pipeline refreshes, you should see:
+
+- `total_transactions` = **73** (+3)
+- `total_revenue` = **$5,806.17** (+\\$15,000)
 
 This is the power of Dynamic Tables — one INSERT into Bronze, and the entire pipeline 
 updates automatically. No scheduling, no orchestration, no code to maintain.
