@@ -260,7 +260,7 @@ st.success("""
 After the pipeline refreshes, you should see:
 
 - `total_transactions` = **73** (+3)
-- `total_revenue` = **$5,806.17** (+\\$15,000)
+- `total_revenue` = **$5,806.17** (+$15,000)
 
 This is the power of Dynamic Tables — one INSERT into Bronze, and the entire pipeline 
 updates automatically. No scheduling, no orchestration, no code to maintain.
