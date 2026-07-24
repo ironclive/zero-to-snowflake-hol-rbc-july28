@@ -77,8 +77,6 @@ running the query. The underlying data is never modified.
 
 st.markdown("#### Exercise 7.1 — View sensitive data (before masking)")
 
-st.warning("⚠️ Same neighbor as before — they must have completed Exercises 7.7–7.9 for the row access policy to be in effect.")
-
 st.code("""
 -- With your lab role, you can see all data
 SELECT
@@ -203,6 +201,8 @@ ORDER BY customer_count DESC;
 st.success("✅ You should see all 6 provinces (Alberta, British Columbia, Manitoba, Nova Scotia, Ontario, Quebec).")
 
 st.markdown("#### Exercise 7.10 — Test: Query ANOTHER participant's schema (restricted)")
+
+st.warning("⚠️ Same neighbor as before — they must have completed Exercises 7.7–7.9 for the row access policy to be in effect.")
 
 st.code("""
 -- Query another participant's table — you only see Ontario rows
