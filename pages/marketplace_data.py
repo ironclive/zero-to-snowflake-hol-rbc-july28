@@ -24,10 +24,10 @@ and keeping it refreshed. The **Snowflake Marketplace** eliminates all of that.
 **Why this matters in banking:**
 - Enrich customer profiles with demographic or credit bureau data
 - Add economic indicators (unemployment, GDP, interest rates) to risk models
-- Bring in market data for portfolio analytics — no vendor integration needed
+- Bring in market data and FX rates for portfolio analytics — no vendor integration needed
 - Compliance teams can reference regulatory datasets without separate infrastructure
 
-**In this section**, we'll subscribe to a free listing and join it with our banking data.
+**In this section**, we'll explore a pre-installed Marketplace listing and join FX rate data with our banking transactions.
 """)
 
 st.markdown("---")
@@ -37,140 +37,136 @@ st.markdown("""
 
 By the end of this section, you will be able to:
 - Navigate the Snowflake Marketplace
-- Subscribe to a free data listing
+- Understand how Marketplace subscriptions work
 - Explore shared data without any ETL or data loading
 - Join Marketplace data with your banking tables for enriched analytics
 """)
 
 st.markdown("---")
 
-st.header("Part A: The Snowflake Marketplace")
+st.header("Part A: Browse the Snowflake Marketplace")
 
 st.markdown("""
-### What is the Snowflake Marketplace?
+#### Exercise 6.1 — Navigate to the Marketplace
 
-The Snowflake Marketplace provides access to **thousands of data listings** from third-party providers — 
-directly in your Snowflake account. Key benefits:
-
-- **No ETL required** — data appears as a shared database in your account
-- **Always up-to-date** — providers maintain and refresh their data
-- **Governed** — access controlled by Snowflake's security model
-- **Free and paid listings** — many high-value datasets are free
-
-### Use Cases in Banking
-- Economic indicators for risk modeling
-- Market data for portfolio analytics
-- Geographic/demographic data for customer segmentation
-- Financial benchmarks and indices
-""")
-
-st.markdown("---")
-
-st.header("Part B: Subscribe to Snowflake Public Data (Free)")
-
-st.markdown("""
-### Step 1: Navigate to the Marketplace
-
-1. In Snowsight, click **Data Products → Marketplace** in the left nav.
+1. In Snowsight, click **Marketplace → Snowflake Marketplace** in the left nav.
 2. You'll see featured and recommended listings.
+3. In the search bar, type: **`Snowflake Public Data`**
+4. Look for the listing: **"Snowflake Public Data (Free)"** by Snowflake Inc.
+5. Click on the listing to view details.
 """)
 
-st.markdown("""
-### Step 2: Find the Listing
+st.info("""
+💡 **Note:** This listing has already been subscribed for you. You'll see it marked as 
+**"Already Installed"** — the instructor pre-provisioned it so everyone can use it immediately.
 
-1. In the search bar, type: **`Snowflake Public Data`**
-2. Look for the listing: **"Snowflake Public Data (Free)"** by Snowflake Public Data
-3. Click on the listing to view details.
-""")
-
-st.markdown("""
-### Step 3: Get the Data
-
-1. Click the **Get** button.
-2. Review the information in the dialog.
-3. Accept the terms and click **Get** again.
-4. Optionally rename the database (default: `SNOWFLAKE_PUBLIC_DATA_FREE`).
-5. Click **Done**.
-""")
-
-st.success("""
-🎉 **That's it!** A new database now appears in your account with live financial and economic data.
-No loading, no ETL, no pipelines. The data is instantly queryable.
+In a real scenario, you would click **Get**, accept the terms, and a new shared database 
+would appear in your account instantly — no data loading required.
 """)
 
 st.markdown("---")
 
-st.header("Part C: Explore the Marketplace Data")
+st.header("Part B: Explore the Marketplace Data")
 
-st.markdown("**Step 1:** Explore what's available:")
+st.markdown("""
+The listing created a database called `TU30_SNOWFLAKE_PUBLIC_DATA` with a single schema 
+`PUBLIC_DATA_FREE` containing **370 views** across domains like finance, economics, weather, 
+demographics, and more.
+""")
+
+st.markdown("#### Exercise 6.2 — Discover available data")
 
 st.code("""
--- See what schemas are available
-SHOW SCHEMAS IN DATABASE SNOWFLAKE_PUBLIC_DATA_FREE;
+-- See the schema structure
+SHOW VIEWS IN SCHEMA TU30_SNOWFLAKE_PUBLIC_DATA.PUBLIC_DATA_FREE LIMIT 20;
 """, language="sql")
 
 st.code("""
--- Explore the FINANCE schema (if available)
-SHOW TABLES IN SCHEMA SNOWFLAKE_PUBLIC_DATA_FREE.FINANCE;
-
--- Or explore all schemas
-SHOW TABLES IN DATABASE SNOWFLAKE_PUBLIC_DATA_FREE;
-""", language="sql")
-
-st.markdown("**Step 2:** Preview some data:")
-
-st.code("""
--- Example: Look at available financial data
+-- Preview FX (foreign exchange) rate data — USD/CAD
 SELECT *
-FROM SNOWFLAKE_PUBLIC_DATA_FREE.FINANCE.SEI_DAILY_STOCK_PRICING_WITH_ANALYTICS
+FROM TU30_SNOWFLAKE_PUBLIC_DATA.PUBLIC_DATA_FREE.FX_RATES_TIMESERIES
+WHERE BASE_CURRENCY_ID = 'USD' AND QUOTE_CURRENCY_ID = 'CAD'
+ORDER BY DATE DESC
 LIMIT 20;
 """, language="sql")
 
-st.info("""
-💡 **Note:** The exact tables and schemas available may vary. Use `SHOW TABLES` 
-and `SHOW SCHEMAS` to explore what's in your version of the listing.
+st.success("""
+**What happened?** You queried live exchange rate data maintained by the provider — no ETL, 
+no pipelines, no storage costs on your end. This data refreshes automatically.
 """)
+
+st.markdown("#### Exercise 6.3 — Explore Canadian economic data")
+
+st.code("""
+-- Bank of Canada Prime Rate over time
+SELECT VARIABLE_NAME, DATE, VALUE, UNIT
+FROM TU30_SNOWFLAKE_PUBLIC_DATA.PUBLIC_DATA_FREE.CANADA_STATCAN_TIMESERIES
+WHERE VARIABLE_NAME = 'Chartered bank administered interest rates - Prime rate'
+ORDER BY DATE DESC
+LIMIT 20;
+""", language="sql")
 
 st.markdown("---")
 
-st.header("Part D: Enrich Your Banking Data")
+st.header("Part C: Enrich Your Banking Data")
 
 st.markdown("""
 Now for the powerful part — **join Marketplace data with your banking tables** to create 
 enriched analytics without any data movement.
 
-### Example: Cross-reference with economic data
-
-The concept here is simple: external datasets can add context to your internal data. 
-In a real-world scenario, you might join:
-- Customer locations with economic indicators (unemployment rate, GDP by province)
-- Transaction dates with market data (what was the market doing when customers transacted?)
-- Product categories with industry benchmarks
+We'll join our `TRANSACTIONS` table with the `FX_RATES_TIMESERIES` view to see what the 
+USD/CAD exchange rate was on each transaction date.
 """)
 
-st.markdown("**Example query** (adjust based on available Marketplace tables):")
+st.markdown("#### Exercise 6.4 — Join transactions with FX rates")
 
 st.code("""
--- Pattern: Enrich internal banking data with external context
--- This is a template — adjust table/column names based on what's in your Marketplace listing
+-- Enrich transactions with the USD/CAD rate on the transaction date
+SELECT
+    t.TRANSACTION_ID,
+    t.TRANSACTION_DATE,
+    t.TRANSACTION_TYPE,
+    t.AMOUNT,
+    fx.VALUE AS USD_CAD_RATE,
+    ROUND(t.AMOUNT * fx.VALUE, 2) AS AMOUNT_USD
+FROM TRANSACTIONS t
+JOIN TU30_SNOWFLAKE_PUBLIC_DATA.PUBLIC_DATA_FREE.FX_RATES_TIMESERIES fx
+    ON t.TRANSACTION_DATE = fx.DATE
+    AND fx.BASE_CURRENCY_ID = 'USD'
+    AND fx.QUOTE_CURRENCY_ID = 'CAD'
+ORDER BY t.TRANSACTION_DATE DESC
+LIMIT 20;
+""", language="sql")
 
--- Example: Customer distribution by province (internal) 
--- ready to join with provincial economic indicators (external)
-SELECT C.PROVINCE,
-       COUNT(*) AS customer_count,
-       AVG(C.ANNUAL_INCOME) AS avg_income,
-       AVG(C.CREDIT_SCORE) AS avg_credit_score,
-       SUM(T.AMOUNT) AS total_transaction_volume
-FROM RETAIL_BANKING.CUSTOMERS C
-JOIN RETAIL_BANKING.TRANSACTIONS T ON C.CUSTOMER_ID = T.CUSTOMER_ID
-GROUP BY C.PROVINCE
-ORDER BY total_transaction_volume DESC;
+st.success("""
+**What happened?** You joined internal banking data with live Marketplace FX data in a single 
+query — no data loading, no API calls, no ETL pipelines. The data lives in Snowflake's shared 
+infrastructure and is always current.
+""")
+
+st.markdown("#### Exercise 6.5 — Aggregate by month with FX context")
+
+st.code("""
+-- Monthly transaction volume with average exchange rate
+SELECT
+    DATE_TRUNC('MONTH', t.TRANSACTION_DATE) AS MONTH,
+    COUNT(*) AS transaction_count,
+    SUM(t.AMOUNT) AS total_amount_cad,
+    AVG(fx.VALUE) AS avg_usd_cad_rate,
+    ROUND(SUM(t.AMOUNT) / AVG(fx.VALUE), 2) AS estimated_amount_usd
+FROM TRANSACTIONS t
+JOIN TU30_SNOWFLAKE_PUBLIC_DATA.PUBLIC_DATA_FREE.FX_RATES_TIMESERIES fx
+    ON t.TRANSACTION_DATE = fx.DATE
+    AND fx.BASE_CURRENCY_ID = 'USD'
+    AND fx.QUOTE_CURRENCY_ID = 'CAD'
+GROUP BY MONTH
+ORDER BY MONTH DESC;
 """, language="sql")
 
 st.markdown("""
-> 💡 **Key Insight:** In production, you would JOIN this with provincial economic data from the 
-> Marketplace (e.g., unemployment rates, housing starts, GDP growth) to build richer risk 
-> and segmentation models — all without any data loading or ETL.
+> 💡 **Key Insight:** In production, you would use this pattern to enrich risk models, 
+> build multi-currency reporting, or add economic context to customer analytics — all 
+> without any data movement or vendor integrations.
 """)
 
 st.markdown("---")
@@ -181,10 +177,10 @@ CoCo can help you discover and use Marketplace data:
 
 | What you did | CoCo prompt |
 |-------------|-------------|
-| Explore listing | `What schemas and tables are in SNOWFLAKE_PUBLIC_DATA_FREE?` |
-| Preview data | `Show me sample rows from the finance tables in the public data listing` |
-| Enrich banking data | `Join our customer province data with any economic indicators from the marketplace listing` |
-| Find relevant data | `What marketplace tables could I join with our CUSTOMERS table by province?` |
+| Explore listing | `What views are in TU30_SNOWFLAKE_PUBLIC_DATA.PUBLIC_DATA_FREE?` |
+| Preview FX data | `Show me the latest USD/CAD exchange rates from the public data listing` |
+| Enrich banking data | `Join our transactions with USD/CAD FX rates from the marketplace data` |
+| Find relevant data | `What marketplace views have Canadian economic data?` |
 
 CoCo can also help you discover new listings: `Search the Snowflake Marketplace for Canadian economic data`
 """)
@@ -198,7 +194,7 @@ You've learned:
 - The Snowflake Marketplace provides instant access to third-party data
 - Subscribing is a click — no ETL, no pipelines, no data loading
 - Marketplace data can be joined directly with your internal tables
-- This pattern enables enriched analytics without data movement
+- This pattern enables enriched analytics (FX rates, economic indicators) without data movement
 
 **Next →** Head to **Section 7: Governance** to secure your data with masking and row access policies.
 """)

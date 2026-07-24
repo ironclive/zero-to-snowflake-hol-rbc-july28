@@ -28,7 +28,7 @@ called **Horizon**, lets you define rules once and enforce them everywhere, auto
 - **No data duplication** — instead of copying data into restricted schemas, policies enforce access at query time
 - **Auditability** — all access is logged; policies are centrally defined and easy to review
 
-**In this section**, we'll create masking policies to hide email/income and a row access policy to restrict by province.
+**In this section**, we'll create masking policies to hide email/income and a row access policy to restrict by province — then prove they work by querying another participant's schema.
 """)
 
 st.markdown("---")
@@ -41,7 +41,7 @@ By the end of this section, you will be able to:
 - Understand Snowflake's governance framework (Horizon)
 - Create and apply a column-level masking policy
 - Create and apply a row access policy
-- See how policies enforce data protection transparently
+- **See policies in action** by querying another participant's schema
 """)
 
 st.markdown("---")
@@ -75,7 +75,7 @@ A masking policy dynamically replaces column values at query time based on the r
 running the query. The underlying data is never modified.
 """)
 
-st.markdown("#### Exercise 6.1 — View sensitive data (before masking)")
+st.markdown("#### Exercise 7.1 — View sensitive data (before masking)")
 
 st.code("""
 -- With your lab role, you can see all data
@@ -89,19 +89,24 @@ FROM CUSTOMERS
 LIMIT 10;
 """, language="sql")
 
-st.markdown("#### Exercise 6.1 — Create a masking policy for email")
+st.markdown("#### Exercise 7.2 — Create a masking policy for email")
+
+st.warning("""
+⚠️ **Replace `XX` with your participant number** (e.g., `_05` if you are User 05).
+This ensures only YOUR role can see unmasked data.
+""")
 
 st.code("""
 CREATE OR REPLACE MASKING POLICY EMAIL_MASK AS (val STRING)
 RETURNS STRING ->
     CASE
-        WHEN CURRENT_ROLE() LIKE 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_%'
+        WHEN CURRENT_ROLE() = 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX'
             THEN val
         ELSE REGEXP_REPLACE(val, '.+@', '****@')
     END;
 """, language="sql")
 
-st.markdown("#### Exercise 6.1 — Apply the masking policy")
+st.markdown("#### Exercise 7.3 — Apply the masking policy")
 
 st.code("""
 ALTER TABLE CUSTOMERS
@@ -109,13 +114,13 @@ ALTER TABLE CUSTOMERS
     SET MASKING POLICY EMAIL_MASK;
 """, language="sql")
 
-st.markdown("#### Exercise 6.1 — Create a masking policy for income")
+st.markdown("#### Exercise 7.4 — Create and apply a masking policy for income")
 
 st.code("""
 CREATE OR REPLACE MASKING POLICY INCOME_MASK AS (val NUMBER)
 RETURNS NUMBER ->
     CASE
-        WHEN CURRENT_ROLE() LIKE 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_%'
+        WHEN CURRENT_ROLE() = 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX'
             THEN val
         ELSE NULL
     END;
@@ -125,18 +130,31 @@ ALTER TABLE CUSTOMERS
     SET MASKING POLICY INCOME_MASK;
 """, language="sql")
 
-st.markdown("#### Exercise 6.1 — Test the masking (your role sees full data)")
+st.markdown("#### Exercise 7.5 — Test: Query YOUR schema (unmasked)")
 
 st.code("""
--- With your lab role, you still see full data
+-- Your role matches the policy — you see full data
 SELECT CUSTOMER_ID, EMAIL, ANNUAL_INCOME
 FROM CUSTOMERS LIMIT 5;
 """, language="sql")
 
+st.success("✅ You should see real email addresses and income values — your role is authorized.")
+
+st.markdown("#### Exercise 7.6 — Test: Query ANOTHER participant's schema (masked)")
+
+st.warning("⚠️ **Pick a neighbor's schema number** (e.g., if you are User 05, try RETAIL_BANKING_03).")
+
+st.code("""
+-- Query another participant's table — your role does NOT match their policy
+SELECT CUSTOMER_ID, EMAIL, ANNUAL_INCOME
+FROM TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_01.CUSTOMERS
+LIMIT 5;
+""", language="sql")
+
 st.success("""
-**What happened?** With your lab role, you see the real data. If a role NOT matching TU30_ZERO_TO_SNOWFLAKE_LAB_USER_% queries the same 
-table, emails would show as `****@domain.com` and income would show as `NULL` — same table, 
-same query, different results based on role.
+🎉 **What happened?** You see `****@domain.com` for emails and `NULL` for income. Same table 
+structure, same query — but the masking policy only allows the schema owner's role to see real 
+data. **This is governance in action.**
 """)
 
 st.markdown("---")
@@ -148,39 +166,53 @@ Row access policies filter which **rows** a user can see. This is powerful for m
 scenarios or restricting access by geography, business unit, or segment.
 """)
 
-st.markdown("#### Exercise 6.1 — Create a row access policy")
+st.markdown("#### Exercise 7.7 — Create a row access policy")
+
+st.warning("⚠️ **Replace `XX` with your participant number.**")
 
 st.code("""
--- Only allow non-admin roles to see customers in Ontario
+-- Only YOUR role sees all provinces; everyone else sees only Ontario
 CREATE OR REPLACE ROW ACCESS POLICY PROVINCE_ACCESS AS (province_val VARCHAR)
 RETURNS BOOLEAN ->
     CASE
-        WHEN CURRENT_ROLE() LIKE 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_%'
+        WHEN CURRENT_ROLE() = 'TU30_ZERO_TO_SNOWFLAKE_LAB_USER_XX'
             THEN TRUE
         ELSE province_val = 'Ontario'
     END;
 """, language="sql")
 
-st.markdown("#### Exercise 6.1 — Apply the row access policy")
+st.markdown("#### Exercise 7.8 — Apply the row access policy")
 
 st.code("""
 ALTER TABLE CUSTOMERS
     ADD ROW ACCESS POLICY PROVINCE_ACCESS ON (PROVINCE);
 """, language="sql")
 
-st.markdown("#### Exercise 6.1 — Verify (your role sees all rows)")
+st.markdown("#### Exercise 7.9 — Test: Query YOUR schema (all rows)")
 
 st.code("""
+-- Your role matches — you see all provinces
 SELECT PROVINCE, COUNT(*) AS customer_count
 FROM CUSTOMERS
 GROUP BY PROVINCE
 ORDER BY customer_count DESC;
 """, language="sql")
 
+st.success("✅ You should see all 6 provinces (Alberta, British Columbia, Manitoba, Nova Scotia, Ontario, Quebec).")
+
+st.markdown("#### Exercise 7.10 — Test: Query ANOTHER participant's schema (restricted)")
+
+st.code("""
+-- Query another participant's table — you only see Ontario rows
+SELECT PROVINCE, COUNT(*) AS customer_count
+FROM TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_01.CUSTOMERS
+GROUP BY PROVINCE
+ORDER BY customer_count DESC;
+""", language="sql")
+
 st.success("""
-**What happened?** With your lab role, you see all provinces. Any other role would only see Ontario 
-customers — the other rows are silently filtered out. No errors, no empty results messaging — 
-the user simply never sees data they shouldn't.
+🎉 **What happened?** You only see Ontario customers. The other rows aren't hidden with an error — 
+they simply don't exist from your perspective. The row access policy silently filters them out.
 """)
 
 st.markdown("---")
@@ -188,7 +220,7 @@ st.markdown("---")
 st.header("Part D: Clean up")
 
 st.code("""
--- Remove policies
+-- Remove policies from your table
 ALTER TABLE CUSTOMERS MODIFY COLUMN EMAIL UNSET MASKING POLICY;
 ALTER TABLE CUSTOMERS MODIFY COLUMN ANNUAL_INCOME UNSET MASKING POLICY;
 ALTER TABLE CUSTOMERS DROP ROW ACCESS POLICY PROVINCE_ACCESS;
@@ -207,10 +239,10 @@ CoCo can create governance policies from plain English:
 
 | What you did | CoCo prompt |
 |-------------|-------------|
-| Create email mask | `Create a masking policy that hides email addresses for non-admin roles` |
-| Create income mask | `Mask the ANNUAL_INCOME column so only HOL_USER roles can see it` |
+| Create email mask | `Create a masking policy that hides email addresses for all roles except my own` |
+| Create income mask | `Mask the ANNUAL_INCOME column so only my role can see it` |
 | Apply policies | `Apply the email mask to CUSTOMERS.EMAIL` |
-| Row access policy | `Create a row access policy so non-admin roles can only see Ontario customers` |
+| Row access policy | `Create a row access policy so only my role sees all provinces, others see only Ontario` |
 | Test policies | `Query CUSTOMERS and show me EMAIL and ANNUAL_INCOME` |
 | Clean up | `Remove all masking and row access policies from CUSTOMERS` |
 

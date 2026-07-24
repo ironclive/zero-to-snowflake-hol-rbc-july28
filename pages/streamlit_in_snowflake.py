@@ -20,6 +20,7 @@ pipelines, and no data leaving Snowflake.
 |---------|--------------|
 | **Streamlit** | An open-source Python library where you write code like `st.bar_chart(data)` and get an interactive web app. |
 | **Streamlit in Snowflake** | Run Streamlit apps natively inside Snowflake. The app queries live data, respects all governance policies, and is shared via roles. |
+| **Compute Pool** | SiS apps run on compute pools (not warehouses). Each appcode environment has its own compute pool automatically assigned. |
 | **`get_active_session()`** | Connects your app to Snowflake — no credentials needed since you're already running inside the platform. |
 | **Snowpark** | Snowflake's Python API for querying and transforming data. Used in SiS apps to run SQL and get DataFrames. |
 | **Role-based sharing** | Share your app with any role in your account. Users see only the data their role permits (masking + row access apply automatically). |
@@ -54,7 +55,8 @@ st.header("Part A: What is Streamlit in Snowflake?")
 st.markdown("""
 Streamlit in Snowflake lets you build **interactive Python data applications** that run entirely 
 within your Snowflake account — no external infrastructure, no data movement, no separate 
-authentication. Apps execute with the permissions of the owning role, and data never leaves Snowflake.
+authentication. Apps run on **compute pools** (automatically assigned) and execute with the 
+permissions of the owning role. Data never leaves Snowflake.
 """)
 
 st.info("""
@@ -66,17 +68,18 @@ st.markdown("---")
 
 st.header("Part B: Create a Streamlit App")
 
-st.markdown("#### Exercise 8.1 — Navigate to Streamlit in Snowsight")
+st.markdown("#### Exercise 8.1 — Create a new Streamlit app in Workspaces")
 
 st.markdown("""
-1. In Snowsight, click **Projects → Streamlit** in the left navigation
-2. Click **+ Streamlit App** (top-right)
+1. In Snowsight, click **Projects → Workspaces** in the left navigation
+2. Click the **+** button and select **Streamlit App**
 3. Configure:
    - **App name:** `Banking_Dashboard`
-   - **Warehouse:** `TU30_ZERO_TO_SNOWFLAKE_LAB_WH`
    - **Database:** `TU30_ZERO_TO_SNOWFLAKE_LAB`
-   - **Schema:** `RETAIL_BANKING_XX` (your seat number)
+   - **Schema:** `RETAIL_BANKING_XX` (your participant number)
 4. Click **Create**
+
+The app will automatically be assigned a **compute pool** — no warehouse configuration needed.
 """)
 
 st.markdown("#### Exercise 8.2 — Replace the default code")
@@ -88,6 +91,8 @@ import streamlit as st
 from snowflake.snowpark.context import get_active_session
 
 session = get_active_session()
+session.sql("USE DATABASE TU30_ZERO_TO_SNOWFLAKE_LAB").collect()
+session.sql("USE SCHEMA RETAIL_BANKING").collect()
 
 st.title("🏦 Retail Banking Dashboard")
 st.markdown("Interactive view of customer and transaction data.")
@@ -164,14 +169,17 @@ st.bar_chart(product_df.set_index("PRODUCT_NAME")["REVENUE"])
 st.markdown("#### Exercise 8.3 — Run the app")
 
 st.markdown("""
-1. Click **Run** (top-right) to execute the app
+1. Click **Run** (top-left) to execute the app
 2. Use the sidebar filters to explore data by Province and Segment
 3. Observe how metrics and charts update in real-time
+
+> 💡 **Tip:** The **Deploy** button (top-right) creates the Streamlit object in your schema for publishing.
 """)
 
 st.success("""
 **What happened?** You built a fully interactive dashboard that queries live Snowflake data, 
-respects your governance policies (masking, row access), and requires zero external infrastructure.
+respects your governance policies (masking, row access), and requires zero external infrastructure. 
+The app runs on a compute pool — no warehouse needed.
 """)
 
 st.markdown("---")
@@ -206,16 +214,23 @@ st.download_button("Download CSV", csv, "transactions.csv", "text/csv")
 
 st.markdown("---")
 
-st.header("Part D: Sharing Your App")
+st.header("Part D: Deploy Your App")
 
 st.markdown("""
-To share your app with colleagues:
+To make your app available as a permanent object in your schema:
 
-1. Click the **Share** button (top-right of the app)
-2. Grant access to specific roles (e.g., `ANALYST_ROLE`)
-3. Users with that role can access the app directly from **Projects → Streamlit**
+1. Click the **Deploy** button (top-right of the editor)
+2. Confirm the database, schema, and app name
+3. Click **Deploy**
 
-The app inherits the owner role's permissions — no separate access configuration needed.
+Once deployed, the Streamlit app becomes a schema-level object. To grant access to other roles:
+
+```sql
+GRANT USAGE ON STREAMLIT TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_XX.BANKING_DASHBOARD
+    TO ROLE <role_name>;
+```
+
+Users with that role can then find and launch the app from **Projects → Workspaces**.
 """)
 
 st.markdown("---")
@@ -244,9 +259,10 @@ st.markdown("""
 | Feature | Description |
 |---------|-------------|
 | `get_active_session()` | Connect to Snowflake from within SiS (no credentials needed) |
+| Compute Pool | SiS apps run on compute pools, automatically assigned per appcode |
 | Snowpark DataFrames | Query and transform data using Python |
 | Sidebar filters | `st.sidebar.selectbox()` for interactive filtering |
 | Charts | `st.bar_chart()`, `st.line_chart()`, `st.area_chart()` |
 | Governance | Masking and row access policies apply automatically |
-| Sharing | Role-based access to apps, no external URLs |
+| Sharing | Role-based access to apps via Workspaces |
 """)

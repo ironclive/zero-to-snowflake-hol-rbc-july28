@@ -36,7 +36,7 @@ st.markdown("""
 By the end of this section, you will be able to:
 - Understand Snowflake's multi-layer caching architecture
 - Observe the results cache in action (sub-second repeat queries)
-- Create a zero-copy clone of a schema
+- Create a zero-copy clone of a table
 - Demonstrate that clones are independent from the source
 """)
 
@@ -138,37 +138,33 @@ This is incredibly powerful for:
 
 st.markdown("### Exercise: Clone and Modify")
 
-st.markdown("**Step 1:** Clone the entire RETAIL_BANKING schema:")
+st.markdown("**Step 1:** Clone the CUSTOMERS table within your own schema:")
 
 st.code("""
-CREATE SCHEMA TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_CLONE
-  CLONE TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING;
+CREATE TABLE CUSTOMERS_CLONE CLONE CUSTOMERS;
 """, language="sql")
 
 st.markdown("**Step 2:** Verify the clone has the same data:")
 
 st.code("""
-SELECT COUNT(*) FROM RETAIL_BANKING_CLONE.CUSTOMERS;
+SELECT COUNT(*) FROM CUSTOMERS_CLONE;
 -- Should return 500
-
-SELECT COUNT(*) FROM RETAIL_BANKING_CLONE.TRANSACTIONS;
--- Should return 1000
 """, language="sql")
 
 st.markdown("**Step 3:** Make a change in the clone (delete some rows):")
 
 st.code("""
-DELETE FROM RETAIL_BANKING_CLONE.CUSTOMERS
+DELETE FROM CUSTOMERS_CLONE
 WHERE PROVINCE = 'Alberta';
 
 -- Check the count
-SELECT COUNT(*) FROM RETAIL_BANKING_CLONE.CUSTOMERS;
+SELECT COUNT(*) FROM CUSTOMERS_CLONE;
 """, language="sql")
 
 st.markdown("**Step 4:** Confirm the original is **unaffected**:")
 
 st.code("""
-SELECT COUNT(*) FROM RETAIL_BANKING.CUSTOMERS;
+SELECT COUNT(*) FROM CUSTOMERS;
 -- Still 500!
 """, language="sql")
 
@@ -177,7 +173,7 @@ st.success("The original data is completely untouched. This is the power of zero
 st.markdown("**Step 5:** Clean up — drop the clone:")
 
 st.code("""
-DROP SCHEMA TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_CLONE;
+DROP TABLE CUSTOMERS_CLONE;
 """, language="sql")
 
 st.markdown("---")
@@ -190,10 +186,10 @@ CoCo can help you explore caching and cloning conversationally:
 |-------------|-------------|
 | Run a query twice | `Run this query and tell me the execution time, then run it again` |
 | Test metadata cache | `Suspend TU30_ZERO_TO_SNOWFLAKE_LAB_WH, then get the row count of CUSTOMERS` |
-| Clone a schema | `Create a clone of RETAIL_BANKING called RETAIL_BANKING_CLONE` |
-| Modify the clone | `Delete all Alberta customers from RETAIL_BANKING_CLONE` |
-| Verify isolation | `Compare customer counts between RETAIL_BANKING and RETAIL_BANKING_CLONE` |
-| Clean up | `Drop the RETAIL_BANKING_CLONE schema` |
+| Clone a table | `Create a clone of CUSTOMERS called CUSTOMERS_CLONE` |
+| Modify the clone | `Delete all Alberta customers from CUSTOMERS_CLONE` |
+| Verify isolation | `Compare customer counts between CUSTOMERS and CUSTOMERS_CLONE` |
+| Clean up | `Drop the CUSTOMERS_CLONE table` |
 
 CoCo can also explain **why** queries are fast: `Why did my last query run in 0ms?`
 """)

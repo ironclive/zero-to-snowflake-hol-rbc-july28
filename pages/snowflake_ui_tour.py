@@ -42,7 +42,7 @@ st.markdown("""
 ## Step 1: Log in to Snowsight
 
 1. Open your Snowflake account URL in a browser.
-2. Enter your **username** and **password**.
+2. Log in using **SSO** (Single Sign-On).
 3. You will land on the **Home** page.
 
 > 💡 **Tip:** Bookmark your Snowflake URL for quick access.

@@ -4,13 +4,14 @@
   Zero to Snowflake HOL — July 28, 2026
   
   NOTE: This section is done through the Snowsight UI.
-  Navigate to Projects → Streamlit → + Streamlit App
+  Navigate to Projects → Workspaces → + → Streamlit App
   
   Configure:
     - App name: Banking_Dashboard
-    - Warehouse: TU30_ZERO_TO_SNOWFLAKE_LAB_WH
     - Database: TU30_ZERO_TO_SNOWFLAKE_LAB
-    - Schema: RETAIL_BANKING_XX (your seat number)
+    - Schema: RETAIL_BANKING_XX (your participant number)
+    
+  A compute pool is automatically assigned — no warehouse needed.
 
   Then paste the Python code below into the app editor.
 =============================================================================
@@ -26,6 +27,8 @@ import streamlit as st
 from snowflake.snowpark.context import get_active_session
 
 session = get_active_session()
+session.sql("USE DATABASE TU30_ZERO_TO_SNOWFLAKE_LAB").collect()
+session.sql("USE SCHEMA RETAIL_BANKING").collect()
 
 st.title("🏦 Retail Banking Dashboard")
 st.markdown("Interactive view of customer and transaction data.")

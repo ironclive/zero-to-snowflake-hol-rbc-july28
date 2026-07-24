@@ -67,7 +67,7 @@ ORDER BY revenue_rank;
 -- Exercise 5.6: Insert new transactions into Bronze
 INSERT INTO TRANSACTIONS (TRANSACTION_ID, CUSTOMER_ID, PRODUCT_ID, TRANSACTION_DATE, TRANSACTION_TYPE, AMOUNT, BALANCE_AFTER, CHANNEL, MERCHANT_CATEGORY, STATUS)
 SELECT
-    MAX(TRANSACTION_ID) + SEQ4() + 1,
+    m.max_id + SEQ4() + 1,
     1,
     1,
     CURRENT_DATE(),
@@ -77,7 +77,8 @@ SELECT
     'Online',
     NULL,
     'Completed'
-FROM TRANSACTIONS, TABLE(GENERATOR(ROWCOUNT => 3));
+FROM (SELECT MAX(TRANSACTION_ID) AS max_id FROM TRANSACTIONS) m,
+     TABLE(GENERATOR(ROWCOUNT => 3));
 
 -- Exercise 5.7: Watch data flow through the layers
 -- Wait ~1 minute, then check silver layer
