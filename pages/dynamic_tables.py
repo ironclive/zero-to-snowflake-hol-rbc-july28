@@ -193,8 +193,8 @@ st.markdown("""
 Now let's see the pipeline in action. We'll insert **3 new transactions** into the Bronze layer 
 (the `TRANSACTIONS` table) and then verify they automatically flow through to Silver and Gold.
 
-We're inserting 3 × \\$5,000 deposits — that's \\$15,000 of new revenue that should be easy to spot 
-when it appears in the downstream layers.
+We're inserting 3 × \\$5,000 deposits into **Essential Chequing** (Product ID 1) — that's \\$15,000 
+of new revenue that should be easy to spot when it appears in the downstream layers.
 """)
 
 st.markdown("#### Exercise 5.6 — Insert 3 new transactions into Bronze")
