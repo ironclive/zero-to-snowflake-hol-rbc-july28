@@ -130,10 +130,29 @@ Cloning creates a **copy** of a database, schema, or table that:
 - Consumes **no additional storage** (until changes are made)
 - Is **fully independent** — changes to the clone don't affect the original
 
+### How Does It Work?
+
+Snowflake stores data in immutable **micro-partitions**. When you clone a table, Snowflake 
+doesn't copy any data — it creates a new metadata pointer to the **same underlying micro-partitions**.
+
+```
+┌──────────────┐         ┌──────────────────────────┐
+│  CUSTOMERS   │────────▶│  Micro-partitions (data) │
+└──────────────┘         └──────────────────────────┘
+                                     ▲
+┌──────────────────┐                 │
+│  CUSTOMERS_CLONE │─────────────────┘  (same data, no copy)
+└──────────────────┘
+```
+
+- **At clone time:** Both tables point to the same partitions → **zero additional storage cost**
+- **When you modify the clone:** Only the *changed* partitions are written as new data. The original remains untouched.
+- **Result:** A 10 TB table clones in seconds and costs nothing until you start making changes.
+
 This is incredibly powerful for:
-- Development & testing
+- Development & testing (full production copy, no storage bill)
 - Experimentation without risk
-- Point-in-time snapshots
+- Point-in-time snapshots for auditing
 """)
 
 st.markdown("### Exercise: Clone and Modify")
