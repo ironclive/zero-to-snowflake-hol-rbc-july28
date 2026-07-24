@@ -19,7 +19,7 @@ st.markdown("---")
 st.markdown("""
 ### How this workshop works
 
-Each section has **numbered exercises** that you run in a Snowflake worksheet:
+Each section has **numbered exercises** that you run in a Snowflake SQL file:
 
 - **Snowsight UI** — for navigating and exploring your data
 - **SQL Worksheets** — for writing and running queries

@@ -8,7 +8,7 @@ st.markdown("""
 ## SQL in Snowflake — What You Need to Know
 
 Snowflake uses **standard ANSI SQL** — if you've written SQL before, you already know 90% of what 
-you need. Queries run in **worksheets** inside Snowsight, and results appear instantly below your code.
+you need. Queries run in **SQL files** inside Snowsight, and results appear instantly below your code.
 
 **Key concepts for this section:**
 
@@ -21,7 +21,7 @@ you need. Queries run in **worksheets** inside Snowsight, and results appear ins
 | **Date Functions** | `DATE_TRUNC`, `DAYNAME`, `DATEDIFF` — essential for time-series analysis |
 
 **How it works in Snowflake:**
-- Write SQL in a **worksheet** (like a scratch pad)
+- Write SQL in a **SQL file** (like a scratch pad)
 - Highlight one or more statements and click **▶ Run**
 - Results appear below; you can sort columns, download CSV, or chart them directly
 - Snowflake compiles and optimizes your query automatically — no indexes or hints needed

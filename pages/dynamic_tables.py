@@ -227,7 +227,7 @@ st.header("Part D: Visualize the DAG")
 st.markdown("""
 To see your medallion pipeline in Snowsight:
 
-1. Navigate to **Data → Databases**
+1. Navigate to **Catalog → Database Explorer**
 2. Expand `TU30_ZERO_TO_SNOWFLAKE_LAB` → `RETAIL_BANKING_XX` → **Dynamic Tables**
 3. Click on `PRODUCT_PERFORMANCE`
 4. Select the **Graph** tab

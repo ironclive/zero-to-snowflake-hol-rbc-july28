@@ -9,7 +9,7 @@ st.markdown("---")
 st.header("Step 1: Log in to Snowflake")
 
 st.info("""
-Open your Snowflake URL and log in.
+Open your Snowflake URL and log in using SSO.
 """)
 
 st.markdown("---")

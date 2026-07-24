@@ -31,7 +31,7 @@ st.markdown("""
 By the end of this section, you will be able to:
 - Log in to Snowsight (Snowflake's web UI)
 - Navigate the key areas: Worksheets, Databases, Warehouses, Marketplace
-- Create and configure a worksheet
+- Create and configure a SQL file
 - Set your session context (role, warehouse, database, schema)
 - Browse database objects and preview table data
 """)
@@ -57,9 +57,9 @@ Take a moment to explore the left sidebar:
 
 | Section | What It Contains |
 |---------|-----------------|
-| **Projects → Worksheets** | SQL editor — where you'll spend most of your time |
+| **Projects → Workspaces** | SQL editor — where you'll spend most of your time |
 | **Projects → Dashboards** | Visual dashboards built from queries |
-| **Data → Databases** | Browse all databases, schemas, tables, views |
+| **Catalog → Database Explorer** | Browse all databases, schemas, tables, views |
 | **Data Products → Marketplace** | Free and paid data listings from providers |
 | **Monitoring → Query History** | All queries run in your account |
 | **Admin → Warehouses** | Compute resources (virtual warehouses) |
@@ -69,13 +69,13 @@ Take a moment to explore the left sidebar:
 st.markdown("---")
 
 st.markdown("""
-## Step 3: Create a New Worksheet
+## Step 3: Create a New SQL File
 
-1. Click **Projects → Worksheets** in the left nav.
-2. Click the **+ Worksheet** button (top right).
-3. A new SQL worksheet opens.
+1. Click **Projects → Workspaces** in the left nav.
+2. Click the **+ Add New** button (top left) and select **SQL File**.
+3. A new SQL file opens.
 
-> 📝 **Name your worksheet** by clicking the auto-generated name at the top and renaming it to: `Zero to Snowflake Lab`
+> 📝 **Name your file** by clicking the auto-generated name at the top and renaming it to: `Zero to Snowflake Lab`
 """)
 
 st.markdown("---")
@@ -83,7 +83,7 @@ st.markdown("---")
 st.markdown("""
 ## Step 4: Set Your Context
 
-In your new worksheet, set the session context by running:
+In your new SQL file, set the session context by running:
 """)
 
 st.code("""
@@ -93,14 +93,14 @@ USE DATABASE TU30_ZERO_TO_SNOWFLAKE_LAB;
 USE SCHEMA RETAIL_BANKING_XX;  -- Replace XX with your seat number
 """, language="sql")
 
-st.info("💡 You can also set context using the dropdowns at the top of the worksheet.")
+st.info("💡 You can also set context using the dropdowns at the top of the SQL file.")
 
 st.markdown("---")
 
 st.markdown("""
 ## Step 5: Browse the Data
 
-Navigate to **Data → Databases** and drill into:
+Navigate to **Catalog → Database Explorer** and drill into:
 
 ```
 TU30_ZERO_TO_SNOWFLAKE_LAB → RETAIL_BANKING_XX → Tables
@@ -117,9 +117,9 @@ Click on any table to see:
 st.markdown("---")
 
 st.markdown("""
-## Step 6: Quick Preview from the Worksheet
+## Step 6: Quick Preview from the SQL File
 
-Back in your worksheet, run these quick queries to confirm your data is ready:
+Back in your SQL file, run these quick queries to confirm your data is ready:
 """)
 
 st.code("""
@@ -154,7 +154,7 @@ Instead of navigating the UI manually, you could ask **Cortex Code (CoCo)** to d
 | Check row counts | `How many rows are in each table in my schema?` |
 | Explore columns | `Describe the TRANSACTIONS table` |
 
-CoCo executes SQL on your behalf and returns formatted results — no worksheet needed.
+CoCo executes SQL on your behalf and returns formatted results — no SQL file needed.
 """)
 
 st.markdown("---")
@@ -165,7 +165,7 @@ st.markdown("""
 You've successfully:
 - Logged into Snowsight
 - Navigated the UI
-- Created a worksheet and set your context
+- Created a SQL file and set your context
 - Confirmed access to the retail banking data
 
 **Next →** Head to **Section 2: Querying & Analytics** to start writing real queries.
