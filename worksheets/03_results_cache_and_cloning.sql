@@ -41,7 +41,7 @@ ORDER BY active_customers DESC;  -- Changed!
 -- ============================================================
 
 -- Suspend the warehouse
-ALTER WAREHOUSE TU30_ZERO_TO_SNOWFLAKE_LAB_WH SUSPEND;
+ALTER WAREHOUSE COMPUTE_WH SUSPEND;
 
 -- These still work (metadata cache)!
 SELECT COUNT(*) FROM CUSTOMERS;
@@ -49,7 +49,7 @@ SELECT MIN(TRANSACTION_DATE) FROM TRANSACTIONS;
 SELECT MAX(AMOUNT) FROM TRANSACTIONS;
 
 -- Resume the warehouse for the next exercises
-ALTER WAREHOUSE TU30_ZERO_TO_SNOWFLAKE_LAB_WH RESUME;
+ALTER WAREHOUSE COMPUTE_WH RESUME;
 
 -- ============================================================
 -- PART B: Zero-Copy Cloning
