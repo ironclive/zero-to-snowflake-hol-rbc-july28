@@ -106,6 +106,14 @@ RETURNS STRING ->
     END;
 """, language="sql")
 
+st.info("""
+**How this works:**
+- The policy takes a string value (`val`) and returns a string
+- At query time, Snowflake checks `CURRENT_ROLE()` — if it matches **your** role exactly, you see the real email
+- For everyone else, `REGEXP_REPLACE` replaces everything before `@` with `****` (e.g., `john.smith@rbc.ca` → `****@rbc.ca`)
+- The underlying data is never changed — masking happens dynamically at query time
+""")
+
 st.markdown("#### Exercise 7.3 — Apply the masking policy")
 
 st.code("""
