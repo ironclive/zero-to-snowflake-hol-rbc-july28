@@ -214,25 +214,6 @@ st.download_button("Download CSV", csv, "transactions.csv", "text/csv")
 
 st.markdown("---")
 
-st.header("Part D: Deploy Your App")
-
-st.markdown("""
-To make your app available as a permanent object in your schema:
-
-1. Click the **Deploy** button (top-right of the editor)
-2. Confirm the database, schema, and app name
-3. Click **Deploy**
-
-Once deployed, the Streamlit app becomes a schema-level object. To grant access to other roles:
-
-```sql
-GRANT USAGE ON STREAMLIT TU30_ZERO_TO_SNOWFLAKE_LAB.RETAIL_BANKING_XX.BANKING_DASHBOARD
-    TO ROLE <role_name>;
-```
-
-Users with that role can then find and launch the app from **Projects → Workspaces**.
-""")
-
 st.markdown("---")
 
 with st.expander("🤖 :blue[CoCo Sneak Peek] — Do this with Cortex Code"):
@@ -246,7 +227,6 @@ CoCo can build entire Streamlit apps from a description:
 | Add filters | `Add a sidebar selectbox to filter by CUSTOMER_SEGMENT` |
 | Add metrics | `Show KPI metrics for total customers, transactions, and volume at the top` |
 | Add a table | `Add a data table showing the 20 most recent transactions` |
-| Deploy | `Deploy this Streamlit app to Snowflake in my RETAIL_BANKING_XX schema` |
 
 CoCo writes the full Python code, tests it, and can deploy it — all from natural language.
 """)
